@@ -718,9 +718,9 @@ $settings['container_yamls'][] = __DIR__ . '/services.yml';
    include __DIR__ . '/settings.local.php';
  }
 $databases['default']['default'] = array (
-  'database' => 'ca',
+  'database' => 'dawn',
   'username' => 'root',
-  'password' => '',
+  'password' => 'dawnnoon123456789',
   'prefix' => '',
   'host' => '127.0.0.1',
   'port' => '3306',
