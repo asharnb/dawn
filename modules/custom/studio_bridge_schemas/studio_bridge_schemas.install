@@ -1,0 +1,191 @@
+<?php
+use Drupal\Core\Database\Database;
+use Drupal\Core\Database\Query\Condition;
+
+/*
+ * Implements hook_schema().
+ */
+function studio_bridge_schemas_schema() {
+  $schema['studio_file_transfers'] = array(
+    'fields' => array(
+      'id' => array('type' => 'serial', 'not null' => TRUE,),
+      'fid' => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE,),
+      'pid' => array('type' => 'varchar', 'length' => 250, 'not null' => TRUE,),
+      'sid' => array('type' => 'varchar', 'length' => 250, 'not null' => TRUE,),
+      'created'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+/*
+ * Implements hook__update_8001().
+ *
+ * Adding 'deleted' column to {studio_file_transfers} table.
+ */
+function studio_bridge_schemas_update_8001(&$sandbox) {
+  $spec = array(
+    'type' => 'varchar',
+    'description' => "New Col",
+    'length' => 2,
+    'not null' => FALSE,
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->addField('studio_file_transfers', 'deleted', $spec);
+}
+
+/*
+ * Implements hook__update_8101().
+ *
+ * Adding {studio_product_shoot_period} table.
+ */
+function studio_bridge_schemas_update_8101(&$sandbox) {
+  $spec = array(
+    'fields' => array(
+      'id' => array('type' => 'serial', 'not null' => TRUE,),
+      'sid' => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE,),
+      'pid' => array('type' => 'varchar', 'length' => 250, 'not null' => TRUE,),
+      'start'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'end'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('studio_product_shoot_period', $spec);
+}
+
+/*
+ * Implements hook__update_8101().
+ *
+ * Adding {studio_product_shoot_period} table.
+ */
+function studio_bridge_schemas_update_8102(&$sandbox) {
+  $spec = array(
+    'fields' => array(
+      'id' => array('type' => 'serial', 'not null' => TRUE,),
+      'sid' => array('type' => 'varchar', 'length' => 40, 'not null' => TRUE,),
+      'start'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'end'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'pause'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('studio_session_shoot_period', $spec);
+}
+
+/*
+ * Implements hook__update_8001().
+ *
+ * Adding 'deleted' column to {studio_file_transfers} table.
+ */
+function studio_bridge_schemas_update_8103(&$sandbox) {
+  $spec = array(
+    'type' => 'varchar',
+    'description' => "New Col",
+    'length' => 250,
+    'not null' => FALSE,
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->addField('studio_file_transfers', 'cid', $spec);
+}
+
+/*
+ * Implements hook__update_8104().
+ *
+ * Adding 'deleted' column to {studio_file_transfers} table.
+ */
+function studio_bridge_schemas_update_8104(&$sandbox) {
+  $spec = array(
+    'fields' => array(
+      'id' => array('type' => 'serial', 'not null' => TRUE,),
+      'identifier' => array('type' => 'varchar', 'length' => 160, 'not null' => TRUE,),
+      'pid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'sid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'cid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'time'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('studio_products_import_track', $spec);
+}
+
+/*
+ * Implements hook__update_8105().
+ *
+ * {studio_products_qc_records} table.
+ */
+function studio_bridge_schemas_update_8105(&$sandbox) {
+  $spec = array(
+    'fields' => array(
+      'id' => array('type' => 'serial', 'not null' => TRUE,),
+      'pid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'sid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'qc_note' => array('type' => 'text', 'size' => 'normal', 'not null' => TRUE,),
+      'qc_state' => array('type' => 'varchar', 'length' => 100, 'not null' => TRUE,),
+      'uid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'created'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('studio_products_qc_records', $spec);
+}
+
+/*
+ * Implements hook__update_8006().
+ *
+ * Adding 'weight' column to {studio_file_transfers} table.
+ */
+function studio_bridge_schemas_update_8106(&$sandbox) {
+  $spec = array('type' => 'int', 'not null' => TRUE, 'default' => 0);
+  $schema = Database::getConnection()->schema();
+  $schema->addField('studio_file_transfers', 'weight', $spec);
+}
+
+/*
+ * Implements hook__update_8105().
+ *
+ * {studio_products_qc_records} table.
+ */
+function studio_bridge_schemas_update_8107(&$sandbox) {
+  $spec = array(
+    'fields' => array(
+      'id' => array('type' => 'serial', 'not null' => TRUE,),
+      'pid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'sid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'fid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'qc_note' => array('type' => 'text', 'size' => 'normal', 'not null' => TRUE,),
+      'qc_state' => array('type' => 'varchar', 'length' => 100, 'not null' => TRUE,),
+      'uid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'created'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('studio_qc_img_records', $spec);
+}
+
+/*
+ * Implements hook__update_8105().
+ *
+ * {studio_products_qc_records} table.
+ */
+function studio_bridge_schemas_update_8108(&$sandbox) {
+  $spec = array(
+    'fields' => array(
+      'id' => array('type' => 'serial', 'not null' => TRUE,),
+      'uid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'message' => array('type' => 'varchar', 'length' => 250, 'not null' => TRUE,),
+      'link' => array('type' => 'varchar', 'length' => 250, 'not null' => TRUE,),
+      'to_uid' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE,),
+      'created'   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'status' => array('type' => 'varchar', 'length' => 250, 'not null' => TRUE,),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('studio_notifications', $spec);
+}

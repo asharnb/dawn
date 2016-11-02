@@ -1,0 +1,29 @@
+uuid: 6e0252f6-34b3-4cd4-b400-addb8799f975
+langcode: en
+status: true
+dependencies: {  }
+id: vm
+label: VM
+weight: 3
+is_admin: null
+permissions:
+  - 'view files'
+  - 'restful patch entity:file'
+  - 'restful post entity:file'
+  - 'restful patch entity:node'
+  - 'restful post entity:node'
+  - 'restful get entity:file'
+  - 'restful get file_name_rest_resource'
+  - 'restful delete entity:file'
+  - 'create unmapped_products content'
+  - 'edit any unmapped_products content'
+  - 'edit own unmapped_products content'
+  - 'edit any image files'
+  - 'edit own image files'
+  - 'restful post site_bundle_post'
+  - 'restful post drop_product_post'
+  - 'restful post time_session_product_post'
+  - 'create container content'
+  - 'edit any container content'
+  - 'edit own container content'
+  - 'restful post warehouse_operations'

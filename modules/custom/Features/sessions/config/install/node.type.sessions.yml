@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: Sessions
+type: sessions
+description: 'Session in StudioBridge is the parent container in which all products are added. Session contains information about the photographer associated, the virtual merchandiser and the stylist, the date it was shoot, and the type of session (Pre Lunch or Post Lunch).'
+help: ''
+new_revision: false
+preview_mode: 1
+display_submitted: true

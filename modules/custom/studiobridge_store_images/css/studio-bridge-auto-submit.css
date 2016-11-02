@@ -1,0 +1,69 @@
+.product-view-grid-page-2 img {
+    float: left;
+    /*height: 220px;*/
+    padding: 2px;
+ /*   width: 260px; */
+}
+
+.products-information-view-bloc {
+    float: right;
+    margin-right: 25%;
+    margin-top: -40px;
+}
+.product-view-grid-page-2 .views-field.views-field-field-images {
+    margin-top: 16%;
+}
+
+
+.control-label {
+    margin-left: 1% !important;
+}
+#edit-title {
+    margin-left: 1%;
+    margin-top: 2%;
+}
+#edit-actions button {
+    margin-top: 9%;
+}
+.form-inline .form-group {
+    width: 25%;
+}
+.view-individual-project-view .view-header h3 {
+    float: left;
+    padding: 20px;
+    width: 50%;
+}
+
+.view-display-id-page_3 .view-header h3 {
+    float: left;
+    padding: 20px;
+    width: 50%;
+}
+
+.product-view-list-view img {
+    padding: 10px;
+}
+
+.view-display-id-page_3 table img {
+    float: left;
+    padding: 2px;
+}
+
+#sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    /*width: 450px;*/
+}
+
+#sortable li {
+    margin: 3px 3px 3px 0;
+    padding: 1px;
+    float: left;
+    /*width: 100px;*/
+    height: 90px;
+    font-size: 4em;
+    text-align: center;
+    /*border: 1px solid #ff0000;*/
+    height: auto;
+}

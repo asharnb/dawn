@@ -1,0 +1,38 @@
+services:
+  studio.products:
+    class: Drupal\studiobridge_commons\StudioProducts
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@entity.query', , '@state']
+
+  studio.sessions:
+    class: Drupal\studiobridge_commons\StudioSessions
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@entity.query', , '@state']
+
+  studio.queues:
+    class: Drupal\studiobridge_commons\StudioQueues
+    arguments: ['@database', '@entity_type.manager', '@current_user']
+
+  studio.imgs:
+    class: Drupal\studiobridge_commons\StudioImgs
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@state']
+
+  studio.commons:
+    class: Drupal\studiobridge_commons\StudioCommons
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@entity.query']
+
+  studio.container:
+    class: Drupal\studiobridge_commons\StudioContainer
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@entity.query', , '@state']
+
+  studio.models:
+    class: Drupal\studiobridge_commons\StudioModels
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@entity.query', , '@state']
+
+
+  studio.qc:
+    class: Drupal\studiobridge_commons\StudioQc
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@entity.query', , '@state']
+
+  studio.notifications:
+    class: Drupal\studiobridge_commons\StudioNotifications
+    arguments: ['@database', '@entity_type.manager', '@current_user', '@entity.query', , '@state']
+

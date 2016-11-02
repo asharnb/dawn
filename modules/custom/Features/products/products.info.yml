@@ -1,0 +1,16 @@
+name: Products
+description: 'Provide Products content type and related configuration. '
+type: module
+core: 8.x
+dependencies:
+  - block
+  - field
+  - file_entity
+  - image
+  - menu_ui
+  - node
+  - options
+  - path
+  - system
+  - user
+  - views

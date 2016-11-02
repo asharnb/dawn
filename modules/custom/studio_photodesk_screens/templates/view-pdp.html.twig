@@ -1,0 +1,222 @@
+
+{{kint()}}
+<main id="main-part" class="panel panel-default">
+				<div class="container-fluid" id="container-main-area">
+		<ol class="breadcrumb" id="breadcrumb">
+	<li id="breadcrumb-item-"><a id="breadcrumb-link-" href="" class="Home">Home</a></li>
+		<li id="breadcrumb-item-men"><a id="breadcrumb-link-men" href="" class="">Men</a></li>
+		<li id="breadcrumb-item-men-regular"><a id="breadcrumb-link-men-regular" href="" class="">Regular</a></li>
+		<li id="breadcrumb-item-men-regular-tops"><a id="breadcrumb-link-men-regular-tops" href="" class="">Tops</a></li>
+		<li id="breadcrumb-item-men-regular-tops-tshirts"><a id="breadcrumb-link-men-regular-tops-tshirts" href="" class="active">T-Shirts</a></li>
+		</ol><div class="product-details row" id="product-details">
+	<div class="col-sm-4" id="product-details-col-1">
+
+		<div id="gallery" class="carousel slide product-carousel rectangle gallery-js-ready autorotation-disabled" style="touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+	<div id="zoom-holder" style="height: 554px;"></div>
+	<span id="product-zoom" class="link-zoom visible-xs">Tap to zoom</span>
+	<!-- wrapper for slides -->
+	<div class="product-mask">
+
+		<div id="gallery-wrap" class="carousel-inner" role="listbox" style="width: 2050px; margin-left: 0px;">
+      {% for item in images %}
+
+
+        <div class="item {{active_class}}" id="gallery-slide-0{{loop.index - 1 }}" style="width: 410px;">
+  			<span data-picture="" data-alt="image description" id="gallery-img-loader-00">
+  				<picture>
+
+  					<!-- <span data-src="" data-media="(max-width:767px) and (-webkit-min-device-pixel-ratio:1.5), (max-width:767px) and (min-resolution:144dpi)"></span> -->
+  					<source srcset="{{item.fullimage}}" media="(min-width:1367px)" class="auto-rotated">
+
+  					<!-- <span data-src=""> </span> -->
+  					<source srcset="{{item.fullimage}}" media="(min-width: 768px)" class="auto-rotated">
+
+  					<!-- <span data-src="" data-media="(max-width:767px)"></span> -->
+  					<img src="{{item.fullimage}}" alt="" data-zoom-image-src="{{item.fullimage}}" data-zoom-image="{{item.fullimage}}" class="auto-rotated">
+  				</picture>
+  			</span>
+  		</div>
+
+    {% endfor %}
+		</div>
+		<div class="fakeMask"></div>
+	</div>
+	<!-- indicators -->
+	<ol id="carousel-indicators" class="carousel-indicators">
+  {% for item in images %}
+
+        {% if loop.index == 1 %}
+            {% set active_class = 'active' %}
+        {% else %}
+          {% set active_class = '' %}
+        {% endif %}
+
+
+    <li id="gallery-bullet-0{{loop.index}}" class="{{active_class}}" data-id="{{item.name}}">
+			<span id="gallery-bullet-item-0{{loop.index}}">
+				<img id="thmb-0{{loop.index}}" class="hidden-xs" src="{{item.pdpsmall}}" alt="image description">
+				<img id="thmb-0{{loop.index}}mobile" class="visible-xs" src="{{item.pdpsmall}}" alt="image description">
+			</span>
+			</li>
+
+    {% endfor %}
+
+		</ol>
+</div>
+</div>
+	<!-- product description -->
+	<form id="productDetailsPanel" class="validate-form" method="post" novalidate="novalidate">
+		<div class="col-sm-5 descr" id="product-details-col-2">
+			<div class="holder" id="product-details-description" itemscope="" itemtype="http://schema.org/Product">
+	<div class="logo-holder" id="product-details-logo">
+	<a href="/splash">
+		<img id="product-details-logo-img" src="/{{ directory }}/images/brands/brand_logo_{{ product.field_concept_name.0.value|lower }}.png" alt="SPLASH"></a>
+	</div>
+  <input type="text" class="form-text form-control p-b-m" value="Lee Cooper Printed Cotton T-Shirt with Half Sleeves in Regular Fit">
+	<!-- <h1 itemprop="name" id="product-details-name">Lee Cooper Printed Cotton T-Shirt with Half Sleeves in Regular Fit</h1> -->
+	<div class="product-price m-t-sm" id="product-details-sub-row">
+		<strong id="products-details-price-01" class="price" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+			<del id="products-details-price-old-01" class="hide"></del>
+				<span id="products-details-currency-30" itemprop="priceCurrency" content="AED"></span> <span id="products-details-price-current-01" itemprop="price" content="45.0">AED&nbsp;45</span>
+		</strong>
+
+		<div class="product-review text-right hide " id="product-details-review">
+			<div class="stars" id="product-stars">
+				<img id="product-star1" src="/_ui/shared/images/star.svg" width="14" height="12" alt="star">
+				<img id="product-star2" src="/_ui/shared/images/star.svg" width="14" height="12" alt="star">
+				<img id="product-star3" src="/_ui/shared/images/star.svg" width="14" height="12" alt="star">
+				<img id="product-star4" src="/_ui/shared/images/star.svg" width="14" height="12" alt="star">
+				<img id="product-star5" src="/_ui/shared/images/star.svg" width="14" height="12" alt="star">
+				</div>
+			<a id="product-star-link" href="javascript:void(0)">
+			</a>
+		</div>
+
+		<div class="save-text " id="product-save-note">
+			<span class="saving-discount hide">
+				Save AED&nbsp;<i>0</i> (<i>0</i>%)</span>
+			<span class=" loyalty-msg ">
+				Earn <i>X</i> <span id="loyalty-points">Shukrans</span>
+
+
+
+
+
+
+
+
+
+
+<span class="custom-tooltip _info top" data-component-name="CustomTooltip" data-position="top">
+    <span class="custom-tooltip-icon"><i class="fa fa-question"></i></span>
+    <span class="custom-tooltip-box show">
+
+    </span>
+</span>
+
+
+</span>
+		</div>
+	</div>
+
+	<div class="product-sets" id="product-sets">
+		<!-- products color variant -->
+		<strong class="title" id="product-title-01">Colour</strong>
+<div class="block" id="block-products-carousel-swatch">
+	<div class="products-carousel-color not-enough-slides gallery-js-ready autorotation-disabled" id="products-carousel-swatch">
+		<div class="mask nonavigator" id="mask-carousel-swatch">
+			<ul id="products-list-swatch" class="products list-unstyled color-set" style="width: 75px; margin-left: 0px;">
+        {% for item in images %}
+
+              {% if loop.index == 1 %}
+
+
+            <li id="filter-form-colo-item-{{loop.index}}" style="float:none;" class="active">
+    				<span class="jcf-radio jcf-checked"><input id="color-0" name="radioColor" type="radio" checked="checked" value="" ><span></span></span>
+    				<label id="filter-form-label-color-0" for="color-0" class="jcf-label-active">
+    					<img src="{{item.pdpsmall}}">
+    				</label>
+    			</li>
+          {% endif %}
+          {% endfor %}
+
+
+		</ul>
+		</div>
+		<a href="javascript:void(0);" class="btn-prev btn-prev-swatch _show" id="products-carousel-prev-swatch">Next</a>
+		<a href="javascript:void(0);" class="btn-next btn-next-swatch _show" id="products-carousel-next-swatch">Previous</a>
+		<div class="pagination" id="products-carousel-switcher-swatch"></div>
+	</div>
+</div>
+<strong class="title" id="product-title2">
+		<label id="size-label">Size<a id="sizeGuide-link" href="javascript:void(0);" data-size-code="16">(Size guide)</a>
+			</label>
+	</strong>
+
+	<ul class="list-unstyled set-size" id="filter-form-sizes">
+		{% for item in product.field_size_name %}
+		<li id="filter-form-size-item-{{loop.index}}">
+ 				<span class="jcf-radio jcf-unchecked"><input id="size-{{loop.index}}" name="radioSize" type="radio" value="{{item.value}}"  style="position: absolute; opacity: 0;"><span></span></span>
+ 				<label id="filter-form-label-size-0" for="size-0" class="active">
+ 					{{item.value}}</label>
+ 			</li>
+		{% endfor %}
+		</ul>
+
+
+<strong class="title" id="product-title3"><label for="qty-number">Quantity</label></strong>
+		<div class="qty-block" id="product-qty">
+
+
+			<span class="jcf-number"><input id="qty-number" name="quantity" type="number" min="1" value="1" max="5" data-product-threshold="5" data-msg-min="Please adjust your quantity" data-msg-required="Please enter a quantity" data-msg-number="Please enter a valid quantity" class="jcf-real-element"><span class="jcf-btn-inc"></span><span class="jcf-btn-dec"></span></span>
+
+
+			<strong class="stock " id="product-stock">
+				<i id="product-stock-icon" class="icon-full"></i>In stock online</strong>
+			<strong class="outstock hide" id="product-outstock">
+				<i id="product-outstock-icon" class="icon-out"></i>Sold out</strong>
+		</div>
+		<div class="missed-offer-holder hide">
+			<label id="missed-offer-label" class=" ">
+			</label>
+			 &nbsp; <span id="product-offer">.&nbsp;<a href="/search?q=allPromotions:{0}">Browse promotion</a></span>
+
+		</div>
+
+	</div>
+	<div class="descr-text hidden-xs" id="product-details-text">
+<hr class="visible-xs">
+
+	<strong class="title visible-xs" id="product-details-text-title">Overview</strong>
+			<!-- <p id="product-details-p">Add a pop of colour to your wardrobe with this charming t-shirt. It comes in a vibrant shade and features typography print at front for a vintage look. The round neck and soft fabric elevate comfort.</p> -->
+<textarea class="js-text-full text-full form-textarea form-control resize-vertical" data-drupal-selector="edit-field-notes-0-value" title=""  rows="4" cols="60" placeholder="Product Description">Add a pop of colour to your wardrobe with this charming t-shirt. It comes in a vibrant shade and features typography print at front for a vintage look. The round neck and soft fabric elevate comfort.</textarea>
+      <div class="row" id="product-details-lists">
+				<div class="col-sm-5 col-xs-6" id="product-details-lists-col1">
+					<ul id="product-details-list1">
+							<li id="product-details-list-item1">Design :</li> <input type="text" class="form-text form-control p-b-m" value="Printed">
+							<li id="product-details-list-item2">Model Wears :</li> <input type="text" class="form-text form-control p-b-m" value="Size M">
+							<li id="product-details-list-item3">Style :</li> <input type="text" class="form-text form-control p-b-m" value="Casual">
+							<li id="product-details-list-item4">Material :</li> <input type="text" class="form-text form-control p-b-m" value="100% Cotton">
+							</ul>
+					</div>
+				<div class="col-xs-6" id="product-details-list-col2">
+					<ul id="product-details-list2">
+							<li id="product-details-list-item1">Model Stats :</li> <input type="text" class="form-text form-control p-b-m" value="Chest 99 cm, Waist 81 cm, Hips 94 cm, Height 183 cm">
+							<li id="product-details-list-item2">Sleeve Length :</li> <input type="text" class="form-text form-control p-b-m" value="Short Sleeves">
+							<li id="product-details-list-item3">Care Information :</li> <input type="text" class="form-text form-control p-b-m" value="Machine Wash">
+							</ul>
+					</div>
+			</div>
+
+		</div>
+</div>
+
+
+
+</div>
+
+	</form>
+</div>
+
+	</div>
+</main>

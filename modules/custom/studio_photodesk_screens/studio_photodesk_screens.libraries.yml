@@ -1,0 +1,42 @@
+studiobridge-sessions:
+  version: VERSION
+  head: true,
+  css:
+    theme:
+      css/dataTables/datatables.min.css: {}
+  js:
+    js/bootstrap/bootstrap.min.js: {}
+    js/datatables/datatables.min.js: {}
+    js/datatable-responsive/datatables.responsive.min.js: {}
+    js/scripts.js: {}
+    js/studio-view-session-drop-product.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal.ajax
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+    - core/jquery.ui.sortable
+
+studiobridge-analysis:
+  js:
+    js/analysis.js: {}
+  dependencies:
+    - core/jquery
+
+view-product:
+  js:
+    js/viewproduct.js: {}
+
+lms-pdp:
+  css:
+    theme:
+      css/lms.css: {}
+  js:
+    js/scroller.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal.ajax
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once

@@ -1,0 +1,257 @@
+
+{% extends 'sbtheme_page.html.twig' %}
+
+
+{% block sbtheme_scancontainer %}
+
+  <div class="col-sm-12 m-t-10 no-padding">
+        <div class="col-sm-5">
+            <h5 class="no-margins semi-bold p-t-10">Enter Product Tag</h5>
+            {{ form|without('resequence','delete','spinner') }}
+        </div>
+        <div class="col-sm-1 p-t-45">
+            <a class="btn input-clear">Clear</a>
+
+        </div>
+        <div class="col-sm-1 p-t-50">
+            {{ form.spinner }}
+        </div>
+        <div class="col-sm-4 p-t-20 pull-right">
+
+{% if form.models['#models']|length > 0 %}
+          <div class="social-avatar pull-right">
+                        <span class="pull-left">
+                          <img src="{{form.models['#models'].0.model_image_path}}" class="img-circle" alt="">
+                        </span>
+                        <div class="media-body p-xs">
+                          <h6 class="no-margins bold">
+                            {{form.models['#models'].0.model_name}}
+                          </h6>
+                          <small class="text-complete">Model on shoot</small>
+                        </div>
+                      </div>
+
+  {% endif %}
+        </div>
+
+
+  </div>
+
+{% endblock %}
+
+
+{% block sbtheme_product %}
+
+            <div class="col-sm-12 p-sm border-bottom">
+              <h5 class="semi-bold m-b-sm">Product Information</h5>
+                {% if form.productdetails['#concept'] == 'Unmapped' %}
+                <div class="alert alert-warning">
+    This is an unmapped product. Please make sure the barcode was entered correctly and matches the physical barcode.
+
+                </div>
+                {% endif %}
+                    <div class="col-lg-6">
+                        <dl class="dl-horizontal">
+                          <dt>Concept </dt>
+                          {% if form.productdetails['#concept'] == 'Unmapped' or form.productdetails['#concept'] == '' %}
+                              <dd id="dd-concept"><span class="bold">Not Available</span></dd>
+                          {% else %}
+                              <dd id="dd-concept" class="mb-10"><img
+                                          src="/{{ directory }}/images/brands/brand_logo_{{ form.productdetails['#concept']|lower }}.png"
+                                          height="20px"></dd>
+                          {% endif %}
+                            <dt>Identifier</dt>
+                            <dd id="dd-identifier">{{ form.productdetails['#identifier'] }}</dd>
+                            <dt>Style No</dt>
+                            <dd id="dd-styleno">{{ form.productdetails['#styleno'] }}</dd>
+
+                            <!-- <dt>Season</dt>
+                            <dd></dd> -->
+
+                            <dt>Description</dt>
+                            <dd id="dd-description">{{ form.productdetails['#description'] }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-lg-6">
+                        <dl class="dl-horizontal">
+                          <dt>Color Variant</dt>
+                          <dd><strong id="dd-colorvariant">{{ form.productdetails['#colorvariant']|raw }}</strong></dd>
+                            <dt>Gender</dt>
+                            <dd><strong id="dd-gender">{{ form.productdetails['#gender'] }}</strong></dd>
+                            <dt>Color</dt>
+                            <dd id="dd-color">{{ form.productdetails['#color'] }}</dd>
+
+                        </dl>
+                    </div>
+
+                </div>
+
+
+
+{% endblock %}
+
+{% spaceless %}
+    {% block sbimages %}
+
+
+        {% for image in form.images['#images'] %}
+
+            {% if not image.fid == '' %}
+
+                <div class="bulkviewfiles imagefile" id="warpper-img-{{ image.fid }}">
+                    {% if image.tag == '1' %}
+                    <div class="ribbon" id="ribboncontainer"><span data-id="{{ image.fid }}" class="for-tag tag" id="seq-{{ image.fid }}" name="{{ image.id }}"><i class="fa fa-lg fa-barcode txt-color-white"></i></span></div>
+                    {% else %}
+                    <div class="ribbon" id="ribboncontainer"><span class="for-tag" id="seq-{{ image.fid }}" name="{{ image.id }}">{{ image.id }}</span></div>
+                    {% endif %}
+
+                    <div class="scancontainer">
+                      <div class="hovereffect">
+                        <img src="{{ image.url }}" class="scanpicture"  id="pic-{{image.fid}}" data-imageid="{{ image.fid }}">
+
+                        <div class="overlay">
+                            <input type="checkbox" class="form-checkbox" id="del-img-{{ image.fid }}" hidden value="{{image.fid}}">
+                           <a class="info select-delete" data-id="{{ image.fid }}" data-click="no">Select image</a>
+                        </div>
+                    </div>
+
+                    <div class="file-name">
+                        <div id="tag-seq-img-{{ image.fid }}" type="hidden"></div>
+
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                            <span  id = {{ image.fid }}>
+                                <a target="_blank" href="/file/{{ image.fid }}" class="col-sm-4 text-info"><i class="fa fa-lg fa-fw fa-search"></i></a>
+                                <a class="col-sm-4 studio-img-fullshot text-info"><i class="fa fa-lg fa-fw fa-copy"></i></a>
+                                <a class=" col-sm-4 studio-img-tag text-info" ><i class="fa fa-lg fa-fw fa-barcode"></i></a>
+
+                            </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                  </div>
+                    <div class="studio-img-weight"><input type="hidden" value="{{ image.fid }}"></div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    {% endblock sbimages %}
+{% endspaceless %}
+
+{% block sidepanel %}
+<div class="panel panel-default">
+  <div class="panel-body">
+
+<div  class="row">
+    <div class=" m-b-10 m-r-10">
+      <span class="pull-right text-success bold">App Connected  <i class="fa fa-circle"></i></span>
+
+    </div>
+</div>
+
+        <div  class="row">
+                  <div class="col-sm-4">
+                    <h5 class="semi-bold">Products</h5>
+                    <h1 class="m-xs no-of-products"><span id="session-total-products">{{ form.productdetails['#total_products'] }}</span></h1>
+                  </div>
+                  <div class="col-sm-4 text-warning">
+                    <h5 class="semi-bold">Unmapped</h5>
+                    <h1 class="m-xs no-of-products" id="liveshoot-Unmapped">{{ form.productdetails['#unmapped_products']|length >0 ? form.productdetails['#unmapped_products'] : '0' }}</h1>
+                  </div>
+                  <div class="col-sm-4 text-danger">
+                    <h5 class="semi-bold">Dropped</h5>
+                    <h1 class="m-xs no-of-products" id="liveshoot-drop">{{ form.productdetails['#dropped_products']|length >0 ? form.productdetails['#dropped_products'] : '0' }}</h1>
+                  </div>
+
+        </div>
+
+        <hr class="simple" style="margin-bottom: 5px !important;">
+
+            <div class="row">
+              <div class="col-sm-6 ">
+                <h5 class="bold">Session ID</h5>
+              </div>
+              <div class="col-sm-6 text-right bold">
+              <h5 class="bold"><a href="/view-session/{{form.session['#value']}}">{{form.session['#value']}}</a></h5>
+              </div>
+
+              <div class="col-sm-6">
+                <h5 class="bold">Status</h5>
+              </div>
+              <div class="col-sm-6 text-right text-success bold">
+                <h5 class="bold">Open</h5>
+              </div>
+            </div>
+
+</div></div>
+<div class="panel panel-default">
+  <div class="panel-body">
+
+    <div  class="row">
+              <div class="col-sm-12">
+                <h5 class="semi-bold">Current Product</h5>
+              </div>
+
+              <div class="col-sm-6 ">
+                <h5>State</h5>
+              </div>
+              <div class="col-sm-6 text-right text-success bold">
+                <h5 class="bold" id="product-state">{{ form.productdetails['#product_state']}}</h5>
+              </div>
+
+              <div class="col-sm-6 ">
+                <h5 >Images Shot</h5>
+              </div>
+              <div class="col-sm-6 text-right bold">
+                <h5 class="bold" id="product-img-count">{{ form.productdetails['#image_count'] ? form.productdetails['#image_count'] : '0' }}</h5>
+              </div>
+
+              <div class="col-sm-6 ">
+                <h5 >Images Deleted</h5>
+              </div>
+              <div class="col-sm-6 text-right text-danger bold">
+                  <h5 class="bold" id="product-img-count-deleted">{{ form.productdetails['#image_count_deleted'] ? form.productdetails['#image_count_deleted'] : '0' }}</h5>
+              </div>
+              <div class="col-sm-12 m-b-sm">
+                <a class="btn btn-xs">Complete</a>
+                <a class="btn btn-xs studio-product-drop">Drop</a>
+                <a class="btn btn-xs studio-product-flag">Flag</a>
+
+              </div>
+
+    </div>
+  <hr class="simple" style="margin-bottom: 5px !important;">
+    <div  class="row">
+              <div class="col-sm-12">
+                <h5 class="semi-bold">Completion Checklist</h5>
+              </div>
+
+              <div class="row m-n">
+              <div class="col-sm-6 ">
+                <h5 >Image sequence</h5>
+              </div>
+              <div class="col-sm-6 text-right text-muted bold">
+                <h5 class="bold"><i id="sequence-check" class="fa fa-lg fw fa-check-square-o text-success"></i></h5>
+              </div>
+            </div>
+            <div class="row m-n">
+              <div class="col-sm-6 ">
+                <h5>Tag Image</h5>
+              </div>
+              <div class="col-sm-6 text-right bold text-muted">
+                <h5 class="bold"><i id="tag-check"class="fa fa-lg fw fa-square-o"></i>
+                  </h5>
+              </div>
+
+            </div>
+
+
+    </div>
+
+  </div>
+</div>
+{% endblock sidepanel %}

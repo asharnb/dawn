@@ -1,0 +1,71 @@
+{{ form.form_build_id }}
+{{ form.form_id }}
+
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <h3 class="no-margins p-b-sm">Product Check-In</span></h3>
+    <h4 class="no-margins">Scan a product tag to check-in products received in the studio</h4>
+  </div>
+</div>
+<hr class="simple">
+<div class="col-xs-9">
+  <div class="panel panel-default row">
+
+
+
+
+
+    {% block sbtheme_scancontainer %}
+    {% endblock %}
+
+    {% block sbtheme_product %}
+    {% endblock %}
+
+
+    <hr class="simple">
+
+    <div class="col-sm-12 p-sm">
+
+
+
+      <div class="row">
+        <div class="col-sm-4 ">
+          <h5 class="semi-bold">Take Product Image</h5>
+          <div class="liveimagecontainer">
+
+
+          <div id="container" >
+              <video autoplay="true" id="videoElement">
+
+              </video>
+              <div class="text-center p-m">
+                <a class="btn btn-complete md-skip btn-circle btn-lg text-center" type="button" id="snapapicture"><i class="fa fa-camera"></i></a>
+              </div>
+
+          </div>
+        </div>
+          <canvas id="snapshot" hidden="hidden"></canvas>
+        </div>
+        <div class="col-sm-8 ">
+          <h5 class=" semi-bold">Product Images</h5>
+            <div id="filmroll" class="imagecontainer">
+
+            </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+
+  </div>
+</div>
+<!-- right panel -->
+<div class="col-xs-3">
+
+  {% block sidepanel %}
+  {% endblock sidepanel %}
+
+</div>

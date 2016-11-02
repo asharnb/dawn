@@ -1,0 +1,652 @@
+<?php
+
+/**
+* @file
+* Contains studiobridge_store_images.module..
+*/
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use \Drupal\node\Entity\Node;
+use \Drupal\file\Entity\File;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\studiobridge_commons\Products;
+use Drupal\studiobridge_commons\Sessions;
+use Drupal\studiobridge_commons\StudioImages;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\user\Entity\User;
+
+/**
+* Implements hook_help().
+*/
+function studiobridge_store_images_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the studiobridge_store_images module.
+    case 'help.page.studiobridge_store_images':
+    $output = '';
+    $output .= '<h3>' . t('About') . '</h3>';
+    $output .= '<p>' . t('This is StudioBridge custom module to assign images to products when system recieved a image.') . '</p>';
+    return $output;
+
+    default:
+  }
+}
+
+/**
+* Implements hook_entity_insert().
+*
+* This function is created for to add received image to current product in the current session.
+*/
+function studiobridge_store_images_entity_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  // todo: save logs here
+  //\Drupal::logger('test_module')->notice('New file received');
+
+  // Get the bundle & Field values of current entity.
+  $bundle = $entity->bundle();
+  $values = $entity->toArray();
+
+  // Take a record fo shoot time.
+  if ($bundle == 'unmapped_products' || $bundle == 'products') {
+    $sid = Sessions::openSessionRecent();
+    Products::AddStartTimeToProduct($sid, $entity->id());
+  }
+
+  $session_operation = \Drupal::state()->get('close_session_operation_started', false);
+  // When new image is received by server, assign it to Current open product of particular session.
+  if ($bundle == 'image' && isset($values['field_session'][0]['target_id'])) {
+
+    // Get sessionid from image entity ; basically when image is uploaded that time user will select opended session.
+    $session_id = $values['field_session'][0]['target_id'];
+    // If session id is 0 then stop here.
+    if(!$session_id) return;
+
+    // todo : attach width, height and other image properties
+    $image = array(
+      'target_id' => $values['fid'][0]['value'],
+      //'alt' => $values['field_image_alt_text'][0]['value'],
+      //'title' => $values['field_image_title_text'][0]['value'],
+      //'width' => '',
+      //'height' => '',
+      //'url' => '/file/43',
+    );
+
+    // Load existing node and attach file.
+    // @todo: take product nid dynamically. (current Product in the session sent by external).
+    // @todo: if no product available then create unmapped product & add it to that.
+
+    // Get current open product.
+    $product_last_updated = studiobridge_store_images_get_open_product($session_id);
+
+    // Load session entity.
+    $session = Node::load($session_id);
+    // Load owner of session, means photographer.
+    $session_uid = $session->getOwnerId();
+
+    // get scanned product from state:
+    $scanned_product_nid = \Drupal::state()->get('last_scan_product_nid' . $session_uid . '_' . $session_id, FALSE);
+
+    // validate based on last scanned product id and product last updated.
+    if ($scanned_product_nid) {
+      //Drupal::logger('unique-xxx')->notice('scanned product nid');
+      // Load product entity.
+      $node = Node::load($scanned_product_nid);
+      // check for mapped or un mapped product.
+      //      $product_bundle = $node->bundle();
+
+      // Get base product id from mapped product.
+      // Get identifier from unmapped product.
+      //      if ($product_bundle == 'products') {
+      //        $field_base_product_id = $node->field_base_product_id->getValue();
+      //        if ($field_base_product_id) {
+      //          $field_base_product_id = $field_base_product_id[0]['value'];
+      //        }
+      //      }
+      //      elseif ($product_bundle = 'unmapped_products') {
+      //        $field_identifier = $node->field_identifier->getValue();
+      //        if ($field_identifier) {
+      //          $field_base_product_id = $field_identifier[0]['value'];
+      //        }
+      //      }
+      // Log file transfer into {studio_file_transfers} table.
+      StudioImages::AddFileTransfer($entity->id(), $scanned_product_nid,$session_id);
+
+    }
+    elseif ($product_last_updated) {
+      //Drupal::logger('unique-xxx')->notice('product_last_updated');
+      $node = Node::load($product_last_updated);
+
+      // Log file transfer into {studio_file_transfers} table.
+      StudioImages::AddFileTransfer($entity->id(), $node->id(),$session_id);
+
+      // check for mapped or un mapped product.
+      //      $product_bundle = $node->bundle();
+
+      // Get base product id from mapped product.
+      // Get identifier from unmapped product.
+      //      if ($product_bundle == 'products') {
+      //        $field_base_product_id = $node->field_base_product_id->getValue();
+      //        if ($field_base_product_id) {
+      //          $field_base_product_id = $field_base_product_id[0]['value'];
+      //        }
+      //      }
+      //      elseif ($product_bundle = 'unmapped_products') {
+      //        $field_identifier = $node->field_identifier->getValue();
+      //        if ($field_identifier) {
+      //          $field_base_product_id = $field_identifier[0]['value'];
+      //        }
+      //      }
+
+    }
+    else {
+      //Drupal::logger('unique-xxx')->notice('else last block');
+      // Create unmapped product if any image received under no products scanned state.
+      //studiobridge_store_images_create_unmapped_product($image, $session_id, 'UnMapped', $entity->id());
+      $unmapped_node = Products::createUnmappedProduct($image, $session_id, 'UnMapped', $entity->id());
+      return;
+    }
+
+    // Get the available images
+    $images = $node->field_images->getValue();
+
+    // add new image to existing
+    if(count($images)){
+      $images = array_merge($images, array($image));
+    }else{
+      $image = array(0=>$image);
+      $images = array_merge($images, $image);
+      //$images = array_push($images,$image);
+    }
+
+
+    //\Drupal::logger('Img count')->notice('<pre>'.print_r($images,true).'<pre>');
+
+    // Update file name for resequence.
+    //    if ($field_base_product_id) {
+    //
+    //      $filemime = $entity->filemime->getValue();
+    //      if ($filemime) {
+    //        $filemime = $filemime[0]['value'];
+    //        $filemime = explode('/', $filemime);
+    //        $filemime = $filemime[1];
+    //        if ($filemime = 'octet-stream') {
+    //          $filemime = 'jpeg';
+    //        }
+    //
+    //        $entity->filename->setValue($field_base_product_id . '_' . count($node->field_images->getValue()) . ".$filemime");
+    //        $entity->save();
+    //
+    //      }
+    //    }
+
+
+    // Set the image array to image field
+    $node->field_images->setValue($images);
+
+
+    // finally save the node
+    $node->save();
+
+    // Add product to session.
+    //studiobridge_store_images_add_product_to_session($session_id, $node);
+    //Products::addProductToSession($session_id, $node);
+  }
+
+  // todo : logs yet be added.
+  //\Drupal::logger('xxx')->notice('<pre>'.print_r($_FILES,true).'<pre>');
+
+  if($entity->bundle() == 'sessions'){
+    // Load services as it is object context.
+    $StudioSessions = \Drupal::service('studio.sessions');
+    $StudioSessions->AddStartTimeToSession($entity->id(),0);
+  }
+
+  //$session_operation = \Drupal::state()->get('close_session_operation_started', false);
+
+  if ($bundle == 'image' && isset($values['field_container'][0]['target_id'])) {
+
+    // Get sessionid from image entity ; basically when image is uploaded that time user will select opended session.
+    $container_id = $values['field_container'][0]['target_id'];
+    if($container_id){
+      $container  = Node::load($container_id);
+      $title = $container->title->getValue();
+      if($title) {
+        $title = $title[0]['value'];
+      }
+
+      // Set product identifier to container state
+      $identifier = \Drupal::state()->get('warehouse_container_last_scan_product_' . $title,false);
+      $StudioProducts = \Drupal::service('studio.products');
+
+      if(!$identifier){
+        $record = $StudioProducts->getLastScannedProduct(0, $container_id);
+        if($record){
+          $identifier = $record['identifier'];
+        }
+      }
+
+      $result = $StudioProducts->getProductByIdentifier($identifier);
+
+      if($result){
+        $product_nid = reset($result);
+        $StudioImgs = \Drupal::service('studio.imgs');
+
+        $StudioImgs->AddFileTransfer($entity->id(), $product_nid,0,$container_id);
+
+        $image = array(
+          'target_id' => $values['fid'][0]['value'],
+        );
+
+        $product_node = Node::load($product_nid);
+        // Get the available images
+        $images = $product_node->field_images->getValue();
+
+        // add new image to existing
+        if(count($images)){
+          $images = array_merge($images, array($image));
+        }else{
+          $image = array(0=>$image);
+          $images = array_merge($images, $image);
+          //$images = array_push($images,$image);
+        }
+
+        // Set the image array to image field
+        $product_node->field_images->setValue($images);
+
+
+        // finally save the node
+        $product_node->save();
+
+      }
+
+    }
+  }
+
+}
+
+/**
+* Implements hook_page_attachments().
+*
+* @param array $attachments
+*/
+function studiobridge_store_images_page_attachments(array &$attachments) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name === 'view.individual_project_view.page_1' ||
+  $route_name == 'view.individual_project_view.page_2' ||
+  $route_name == 'view.individual_project_view.page_3' ||
+  $route_name == 'view.view_sessions.page_3' ||
+  $route_name == 'studio_photodesk_screens.view_session_controller_content'
+  ) {
+    $attachments['#attached']['library'][] = 'studiobridge_store_images/studio-bridge-view-session';
+    $attachments['#attached']['library'][] = 'studiobridge/sweet-alert';
+  } elseif(
+  $route_name == 'studiobridge_live_shoot_page.form'){
+    $attachments['#attached']['library'][] = 'studiobridge_store_images/studio-bridge-view-product';
+
+  }
+  //Js load js file that required in all pages.
+  $attachments['#attached']['library'][] = 'studiobridge_store_images/studio-bridge-global-changes';
+  $attachments['#attached']['library'][] = 'studiobridge/bootstrap';
+
+}
+
+/*
+* Helper function to get product scanned.
+*
+* @param session_id
+*   Session node nid.
+*/
+function studiobridge_store_images_get_open_product($session_id) {
+  // load session entity.
+  $session = Node::load($session_id);
+  // get photographer uid.
+  $session_uid = $session->getOwnerId();
+
+  // query for getting last nid by photographer.
+  $node_id = Products::getProductByUid($session_uid);
+
+  if (count($node_id)) {
+    return $node_id = reset($node_id);
+    //return $node = Node::load($node_id);
+  }
+  else {
+    $node_id_unmapped = Products::getProductByUid($session_uid);
+    if (count($node_id_unmapped)) {
+      return $node_id_unmapped = array_values($node_id_unmapped);
+      //return $node = Node::load($node_id_unmapped[0]);
+    }
+    else {
+      // todo : check this line *
+      //studiobridge_store_images_create_unmapped_product($image, $session_id);
+      return FALSE;
+    }
+  }
+  return FALSE;
+}
+
+
+/*
+*  Implements hook_FORM_ID_form_alter().
+*/
+function studiobridge_store_images_form_node_sessions_form_alter(&$form, FormStateInterface $form_state) {
+  foreach (array_keys($form['actions']) as $action) {
+    if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+      $form['actions'][$action]['#submit'][] = 'studiobridge_store_images_upload_enabled_types_submit';
+    }
+  }
+}
+
+
+/*
+*  Implements hook_FORM_ID_form_alter().
+*/
+function studiobridge_store_images_form_node_container_form_alter(&$form, FormStateInterface $form_state) {
+  foreach (array_keys($form['actions']) as $action) {
+    if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+      $form['actions'][$action]['#submit'][] = 'studiobridge_store_images_container_redirect';
+    }
+  }
+}
+
+/*
+* Submit handler for studiobridge_store_images_form_node_sessions_form_alter() form.
+*/
+function studiobridge_store_images_upload_enabled_types_submit($form, FormStateInterface $form_state) {
+  // Redirect to home page after creating session.
+  $nid = $form_state->getValue('nid');
+  if($nid){
+    $response = new Symfony\Component\HttpFoundation\RedirectResponse(base_path().'view-session/'.$nid);
+    $response->send();
+    exit;
+  }else{
+    $response = new Symfony\Component\HttpFoundation\RedirectResponse(base_path().'view-sessions2');
+    $response->send();
+    exit;
+  }
+}
+
+function studiobridge_store_images_container_redirect($form, FormStateInterface $form_state){
+  // Redirect to container view page after creating container.
+  $nid = $form_state->getValue('nid');
+  if($nid){
+    $response = new Symfony\Component\HttpFoundation\RedirectResponse(base_path().'container/view/'.$nid);
+    $response->send();
+    exit;
+  }
+}
+
+/*
+*  Implements hook_entity_delete().
+*/
+function studiobridge_store_images_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
+
+  // Get bundle type.
+  $bundle = $entity->bundle();
+
+  // When image deleted delete this log from {studio_file_transfers} table.
+  if ($bundle == 'image') {
+    $StudioImgs = \Drupal::service('studio.imgs');
+    $StudioImgs->deleteImagesFromNodes($entity->id());
+
+    // Delete the entity's entry from a fictional table of all entities.
+    StudioImages::DeleteFileTransfer($entity->id());
+  }
+
+  if($bundle == 'unmapped_products' || $bundle == 'products'){
+    //   $title = $entity->title->getValue();
+    $StudioProducts = \Drupal::service('studio.products');
+
+    //Products::DeleteProductLog($title[0]['value'], $session_id,1);
+    $StudioProducts->DeleteProductLog($entity);
+  }
+
+}
+
+/**
+* Act on an entity before it is created or updated.
+*
+* @param \Drupal\Core\Entity\EntityInterface $entity
+*   The entity object.
+*
+* @ingroup entity_crud
+* @see hook_ENTITY_TYPE_presave()
+*/
+function studiobridge_store_images_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+
+  //\Drupal\Core\Cache\Cache::invalidateTags(array('node:202'));
+
+  // check for current bundle is mapped or unmapped product.
+  if ($entity->bundle() == 'products' || $entity->bundle() == 'unmapped_products') {
+
+    // \Drupal::logger('GGG')->notice('<pre>'.print_r($entity->field_images->getValue(),true).'</pre>');
+
+    $concept = 'InValidConcept';
+    $color_variant = 'InValidColorVariant';
+    $product_bundle = $entity->bundle();
+
+    // Get base product id from mapped product.
+    // Get identifier from unmapped product.
+    if ($product_bundle == 'products') {
+      $field_base_product_id = $entity->field_base_product_id->getValue();
+      if ($field_base_product_id) {
+        $field_base_product_id = $field_base_product_id[0]['value'];
+      }
+
+      $product_concept = $entity->field_concept_name->getValue();
+      if($product_concept){
+        $concept = $product_concept[0]['value'];
+      }
+
+      $product_color_variant = $entity->field_color_variant->getValue();
+      if($product_color_variant){
+        $color_variant = $product_color_variant[0]['value'];
+      }
+    }
+    elseif ($product_bundle == 'unmapped_products') {
+      $field_identifier = $entity->field_identifier->getValue();
+      $title = $entity->title->getValue();
+      if ($field_identifier) {
+        $field_base_product_id = $field_identifier[0]['value'];
+      }elseif ($title) {
+        $field_base_product_id = $title[0]['value'];
+      }
+
+      $concept = 'Unmapped';
+      $color_variant = $field_base_product_id;
+    }
+
+    // Get images field from product.
+    $images = $entity->field_images->getValue();
+
+    // make sure both values are set.
+    if ($color_variant && $images) {
+      $i = 1;
+      foreach ($images as $img) {
+        // load file entity.
+        $file = File::load($img['target_id']);
+        $session_id = $file->field_session->getValue();
+        if($session_id){
+          $session_id = $session_id[0]['target_id'];
+        }
+        //\Drupal::logger('123wer')->notice('<pre>'.print_r($session_id,true).'</pre>');
+
+        $filemime = $file->filemime->getValue();
+        if ($filemime && $session_id) {
+          $filemime = $filemime[0]['value'];
+          $filemime = explode('/', $filemime);
+          $filemime = $filemime[1];
+          if ($filemime == 'octet-stream') {
+            $filemime = 'jpg';
+          }
+          // todo : filemime will be wrong
+          // change file name as per sequence number and base product_id value.
+          $filename = $color_variant . '_' . $i . ".$filemime";
+          //$file_uri = $file->uri->getValue();
+          //$x = 'public://'.'xyz/_krishna_'.time();
+
+          //$dir = 'Sessionsx/'.date('H-i-s');
+
+          //$dir = $session_id.'/'.$concept.'/'.$color_variant;
+
+          //          if(StudioImages::ImagePhysicalName($dir,$filename,$file)){
+          //            $folder = "public://$dir";
+          //            $uri = $folder.'/'.$filename;
+          //            $file->uri->setValue($uri); //public://fileKVxEHe
+          //          }
+          $file->filename->setValue($filename);
+          $file->save();
+          //
+          //          $folder = "public://$dir";
+          //          $uri = $folder.'/'.$filename;
+          //          StudioImages::UpdateFileLog($file->id(),$uri);
+
+          $i++;
+
+          //\Drupal::logger('GGG')->notice('<pre>'.print_r($file,true).'</pre>');
+
+          //file_prepare_directory()
+        }
+      }
+    }
+  }
+
+  // On pause session, product time record also pause.
+  // todo : on same state saving of session, we should avoid time record.
+  if($entity->bundle() == 'sessions'){
+    // Load services as it is object context.
+    $StudioProducts = \Drupal::service('studio.products');
+    //$StudioSessions = \Drupal::service('studio.sessions');
+
+    $session_status = $entity->field_status->getValue();
+    $session_status = $session_status[0]['value'];
+    $product_scan = \Drupal::state()->get('productscan_' . $entity->id(), true);
+
+    $last_scan_product = \Drupal::state()->get('last_scan_product_' . $entity->getOwnerId() . '_' . $entity->id(), false);
+    if($last_scan_product && $session_status == 'pause' && !$product_scan){
+      //Products::AddEndTimeToProduct($entity->id(),false,$last_scan_product);
+      $StudioProducts->AddEndTimeToProduct($entity->id(),false,$last_scan_product);
+    }
+    elseif($last_scan_product && $session_status == 'open' & !$product_scan){
+      $pid = Products::getProductByIdentifier($last_scan_product);
+      if($pid){
+        //Products::AddStartTimeToProduct($entity->id(),reset($pid));
+        $StudioProducts->AddStartTimeToProduct($entity->id(),reset($pid));
+      }
+    }
+  }
+
+}
+
+
+/**
+* Respond to updates to an entity.
+*
+* This hook runs once the entity storage has been updated. Note that hook
+* implementations may not alter the stored entity data.
+*
+* @param \Drupal\Core\Entity\EntityInterface $entity
+*   The entity object.
+*
+* @ingroup entity_crud
+* @see hook_ENTITY_TYPE_update()
+*/
+function studiobridge_store_images_entity_update(Drupal\Core\Entity\EntityInterface $entity) {
+
+  $bundle = $entity->bundle();
+  $values = $entity->toArray();
+  if($entity->bundle() == 'image'){
+
+    //drupal_set_message('After image updated');
+    //\Drupal::logger('Img entity update')->notice('Img updated '. $entity->id());
+
+    $full_shot = $entity->field_full_shoot->getValue();
+    $tag = $entity->field_tag->getValue();
+
+    //\Drupal::logger('Img entity update YYY')->notice('<pre>'.print_r($values,true).'<pre>');
+
+    if($full_shot){
+      // Get current session
+      $session_id = Sessions::openSessionRecent();
+      $product_scan = \Drupal::state()->get('productscan_' . $session_id, true);
+      $full_shot_img = \Drupal::state()->get('full_shot' . '_' . $session_id,false);
+      if($full_shot[0]['value'] && $entity->id() != $full_shot_img && !$product_scan){
+
+        //        $user = \Drupal::currentUser();
+        //        $uid = $user->id();
+        \Drupal::state()->set('full_shot' . '_' . $session_id, $entity->id());
+
+        //\Drupal::logger('Img entity update xxx')->notice('<pre>'.print_r($full_shot,true).'<pre>');
+
+      }
+    }
+
+
+
+  }
+
+}
+/*
+ * Implements hook_user_logout().
+ */
+function studiobridge_store_images_user_logout($account){
+  return (new RedirectResponse('/user/login'))->send();
+}
+
+/*
+ * Implements hook_user_login().
+ */
+function studiobridge_store_images_user_login($account){
+
+  drupal_flush_all_caches();
+  return (new RedirectResponse('/view-sessions2'))->send();
+}
+/*
+*  Implements hook_form_alter().
+*/
+function studiobridge_store_images_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  // current logged in user object.
+  $user = \Drupal::currentUser();
+  // uid of current logged in user.
+  $uid = $user->id();
+
+  // Validate in node/add/sessions page to avoid creating multiple open sessions.
+  if ($form_id == 'node_sessions_form') {
+    $form['field_photographer']['widget'][0]['target_id']['#default_value'] = User::load(Drupal::currentUser()->id());
+    $form['field_photographer']['#disabled'] = TRUE;
+
+    $form['title']['widget'][0]['value']['#value'] = 'Session';
+    $form['title']['#disabled'] = TRUE;
+
+
+    $form['field_shoot_class']['widget']['#default_value'] = 'mix_shoot';
+    //$form['field_shoot_class']['#theme_wrappers'][0] = 'form_element';
+    // Get session of logged in user.
+    $result = Sessions::getSessionByUid($uid);
+    if (count($result)) {
+
+      // redirect to sessions page.
+      $response = new Symfony\Component\HttpFoundation\RedirectResponse(base_path() . 'view-sessions2');
+      drupal_set_message('There is a open session, please close it to add new session', 'error');
+
+      $response->send();
+
+
+      exit;
+    }
+
+    $form_state->setRedirect('/view-sessions2');
+  }
+
+  if ($form_id == 'user_login_form') {
+    $form['name']['#attributes']['placeholder'] = t( 'Username' );
+    $form['pass']['#attributes']['placeholder'] = t( 'Password' );
+
+    $form['name']['#title_display'] = 'invisible';
+    $form['pass']['#title_display'] = 'invisible';
+    //$form['title']['widget'][0]['target_id']['#default_value'] = 'New Session';
+
+  }
+}
+
+function add_session_handler(&$form, &$form_state) {
+  $form_state['redirect'] = '/view-sessions2';
+}
+// Testing for new repo commit.

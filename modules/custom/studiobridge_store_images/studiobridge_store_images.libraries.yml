@@ -1,0 +1,23 @@
+studio-bridge-view-product:
+  version: VERSION
+  js:
+    js/studio-bridge-auto-submit.js: {}
+    js/studio-bridge-resquence-images_2_0.js: {}
+    js/studio-bridge-delete-images.js: {}
+    js/studio-bridge-drop-product.js: {}
+    js/studio-bridge-tag-image.js: {}
+    js/studio-bridge-fullshot-image.js: {}
+    js/studio-bridge-close-tab.js: {}
+  css:
+    theme:
+      css/studio-bridge-auto-submit.css: {}
+
+studio-bridge-view-session:
+  js:
+    js/studio-bridge-close-tab.js: {}
+
+studio-bridge-global-changes:
+  version: VERSION
+  js:
+    js/studio-global-changes.js: {}
+    js/studio-notifications.js: {}
