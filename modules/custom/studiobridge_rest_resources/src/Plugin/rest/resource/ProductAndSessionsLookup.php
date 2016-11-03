@@ -125,7 +125,7 @@ public function get($type) {
   $order_direction = $_GET['order'][0]['dir'];
 
   $query = \Drupal::entityQuery('node');
-  $query_count_filter = \Drupal::entityQuery('node');
+
   $query_count_total = \Drupal::entityQuery('node');
 
     if (!empty($_GET['search']['value'])) {
@@ -133,21 +133,29 @@ public function get($type) {
 
 
         $query = \Drupal::entityQuery('node');
+        $query_count_filter = \Drupal::entityQuery('node');
+
         $query->condition('type', $bundles, 'IN');
+        $query_count_filter->condition('type', $bundles, 'IN');
 
         // Or condition for product fields
         $orCondition = $query->orConditionGroup();
         $orCondition->condition('title', db_like($value) . '%', 'LIKE');
         $orCondition->condition('field_product_title', db_like($value) . '%', 'LIKE');
+        $orCondition->condition('field_jira_reference', db_like($value) . '%', 'LIKE');
 
         $query->condition($orCondition);
+        $query_count_filter->condition($orCondition);
+
 
         $query->range($_GET['start'], $_GET['length']);
+        $query_count_filter->range($_GET['start'], $_GET['length']);
 
         //$query->sort($order_field, strtoupper($order_direction));
         $result = $query->execute();
 
-        $total_filtered = $query->count()->execute();
+
+        $total_filtered = $query_count_filter->count()->execute();
 
     } else {
 
