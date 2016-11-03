@@ -4,14 +4,15 @@
 
     <div class="login-container bg-login">
         <div class="p-t-50 ">
-             <img src="http://www.themeboutique.com/dawn/sites/all/themes/dawn/logo.png" alt="Dawn" style="width: 250px;">
-             <h1>Dawn</h1>
+             <img src="/{{ directory }}/images/CC_Logo-black.png" alt="Content Central" style="width: 250px; padding-bottom: 50px;">
+
 
             <div id="form-login" class="p-t-15 login-form" role="form" action="?ls" method="post" name="ls">
                         {{ form.form_build_id }}
                         {{ form.form_id }}
 
 
+            <h5 class="login-signin">Sign into your account</h5>
                         {{ form.name }}
                         {{ form.pass }}
 
@@ -21,6 +22,11 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="/user/password" class="text-complete small">Forgot your password?</a>
+                    </div>
+                </div>
 
 
 
