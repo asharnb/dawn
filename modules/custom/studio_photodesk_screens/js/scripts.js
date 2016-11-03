@@ -39,6 +39,9 @@
         "autoWidth" : true,
         "processing": true,
         "serverSide": true,
+        "oLanguage": {
+         "sProcessing": "Please wait.."
+       },
         "ajax": Drupal.url('screens/products?_format=json')
       } );
       $('#dt_search_box').keyup(function(){

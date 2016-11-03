@@ -128,40 +128,37 @@ public function get($type) {
   $query_count_filter = \Drupal::entityQuery('node');
   $query_count_total = \Drupal::entityQuery('node');
 
-  if (!empty($_GET['search'][0]['value'])) {
-    $value = $_GET['search'][0]['value'];
+    if (!empty($_GET['search']['value'])) {
+        $value = $_GET['search']['value'];
 
 
-    $query = \Drupal::entityQuery('node');
-    $query->condition('type', $bundles, 'IN');
+        $query = \Drupal::entityQuery('node');
+        $query->condition('type', $bundles, 'IN');
 
-    // Or condition for product fields
-    $orCondition = $query->orConditionGroup();
-    $orCondition->condition('title', "$value");
+        // Or condition for product fields
+        $orCondition = $query->orConditionGroup();
+        $orCondition->condition('title', db_like($value) . '%', 'LIKE');
+        $orCondition->condition('field_product_title', db_like($value) . '%', 'LIKE');
 
-    $query->condition($orCondition);
+        $query->condition($orCondition);
 
-    $query->range($_GET['start'], $_GET['length']);
-    $query->sort('nid', DESC);
-    //$query->sort($order_field, strtoupper($order_direction));
-    $result = $query->execute();
+        $query->range($_GET['start'], $_GET['length']);
 
-    $total_filtered = $query->count()->execute();
-  } else {
+        //$query->sort($order_field, strtoupper($order_direction));
+        $result = $query->execute();
 
-    $result = \Drupal::entityQuery('node')
-    ->condition('type', $bundles, 'IN')
-    ->sort('nid', DESC)
-    ->range($_GET['start'], $_GET['length'])
-    ->execute();
+        $total_filtered = $query->count()->execute();
 
-    $total_filtered = $total_count;
+    } else {
 
-  }
+        $result = \Drupal::entityQuery('node')
+        ->condition('type', $bundles, 'IN')
+        ->range($_GET['start'], $_GET['length'])
+        ->execute();
 
+        $total_filtered = $total_count;
 
-
-
+    }
 
 
   //load all the nodes from the result
@@ -182,15 +179,37 @@ public function get($type) {
       );
 
       return new ResourceResponse($data);
+    } else{
+
+      $data = array(
+        'draw' => intval($_GET['draw']),
+        'recordsTotal' => 0,
+        'recordsFiltered' => 0,
+        'data' => '',
+      );
+      return new ResourceResponse($data);
+
     }
 
 
   // Throw an exception if it is required.
   // throw new HttpException(t('Throw an exception if it is required.'));
   return new ResourceResponse("Implement REST State GET!");
+} else {
+
+  $data = array(
+    'draw' => intval($_GET['draw']),
+    'recordsTotal' => 0,
+    'recordsFiltered' => 0,
+    'data' => '',
+  );
+  return new ResourceResponse($data);
+
+
+
+
 }
 
-return new ResourceResponse($data);
 
 }
 
