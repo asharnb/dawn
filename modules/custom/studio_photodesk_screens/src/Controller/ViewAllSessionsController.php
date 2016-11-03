@@ -182,7 +182,6 @@ public function content()
 return [
   '#theme' => 'view_all_sessions',
   '#cache' => ['max-age' => 0],
-  '#results' => $session_data,
   '#attached' => array(
     'library' => array(
       'studio_photodesk_screens/studiobridge-sessions'
