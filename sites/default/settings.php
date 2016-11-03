@@ -729,4 +729,4 @@ $databases['default']['default'] = array (
 );
 $settings['install_profile'] = 'standard';
 //$config_directories['sync'] = 'sites/default/files/config_cI49PoNjSR07pKLc9XFVunmm8jIu_8THOumza2aO2Nvv_FtwVl5qcWUvPYHVuTSuvW2zYiYnLQ/sync';
-$config_directories['sync'] = 'sites/default/config';
+//$config_directories['sync'] = 'sites/default/config';
