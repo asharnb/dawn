@@ -595,7 +595,6 @@ function studiobridge_store_images_user_logout($account){
  */
 function studiobridge_store_images_user_login($account){
 
-  drupal_flush_all_caches();
   return (new RedirectResponse('/view-sessions2'))->send();
 }
 /*
