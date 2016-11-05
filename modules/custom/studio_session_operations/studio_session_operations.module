@@ -104,4 +104,13 @@ function studio_session_operations_node_covert($unmappedProduct,$server_product)
     $unmappedProduct->type->setValue('products');
     $unmappedProduct->save();
   }
+
+  function studio_session_operations_theme($existing, $type, $theme, $path) {
+    return array(
+        'csv_import' => array(
+          'variables' => array('products' => NULL),
+      ),
+    );
+}
+
 }

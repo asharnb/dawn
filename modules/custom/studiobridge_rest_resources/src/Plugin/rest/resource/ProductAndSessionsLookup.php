@@ -143,19 +143,21 @@ public function get($type) {
         $orCondition->condition('title', db_like($value) . '%', 'LIKE');
         $orCondition->condition('field_product_title', db_like($value) . '%', 'LIKE');
         $orCondition->condition('field_jira_reference', db_like($value) . '%', 'LIKE');
+        $orCondition->condition('field_product_category', db_like($value) . '%', 'LIKE');
 
         $query->condition($orCondition);
         $query_count_filter->condition($orCondition);
 
 
         $query->range($_GET['start'], $_GET['length']);
-        $query_count_filter->range($_GET['start'], $_GET['length']);
+        //$query_count_filter->range($_GET['start'], $_GET['length']);
 
         //$query->sort($order_field, strtoupper($order_direction));
         $result = $query->execute();
 
 
         $total_filtered = $query_count_filter->count()->execute();
+
 
     } else {
 
@@ -263,6 +265,10 @@ public function getProducts($result) {
         $product_jira = $product_jira_val[0]['value'];
       }
 
+      $product_seller_val = $current_product->field_seller_name->getValue();
+      if ($product_seller_val) {
+        $product_seller = $product_seller_val[0]['value'];
+      }
 
       $view_link = '<a class="btn btn-xs " href="/view-product/' . $pid . '">View</a>';
 
@@ -270,6 +276,7 @@ public function getProducts($result) {
         $GTIN,
         $product_title,
         $product_category,
+        $product_seller,
         $product_color,
         $product_size,
         $product_jira,

@@ -125,16 +125,25 @@ class StudioProducts implements StudioProductsInterface {
    * @param uid
    *   User entity uid.
    */
-  public function getProductByGTIN($nid) {
+  public function getProductByGTIN($title) {
     $result = $this->queryFactory->get('node')
-      ->condition('type', array('product_new'), 'IN')
-      ->sort('created', 'DESC')
-      ->condition('nid', $nid)
+      ->condition('type', 'product_new')
+      ->condition('title', $title)
       ->range(0, 1)
       ->execute();
     return $result;
   }
 
+
+  public function getProductByGTINSafe($title) {
+    $result = $this->queryFactory->get('node')
+      ->condition('type', 'product_new')
+      ->condition('nid', $title)
+      ->condition('field_safe', 1)
+      ->range(0, 1)
+      ->execute();
+    return $result;
+  }
   /*
    * Helper function, to get a product by its author.
    *

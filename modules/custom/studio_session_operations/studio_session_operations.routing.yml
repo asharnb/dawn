@@ -49,3 +49,12 @@ studio_session_operations.map_un_mapped_products_run:
     _title: 'Mapping unmapped products'
   requirements:
     _permission: 'access content'
+
+
+studio_session_operations.import_csv:
+  path: '/import_csv'
+  defaults:
+    _controller: '\Drupal\studio_session_operations\Controller\ImportCSV::ImportProduction'
+    _title: 'Import CSV'
+  requirements:
+    _permission: 'access content'
