@@ -58,9 +58,10 @@ function studio_photodesk_screens_theme($existing, $type, $theme, $path) {
       ),
       'view_dashboard' => array(
         'variables' => array(
-          'results' => array (),
-          'mapped' => array (),
-          'unmapped' => array (),
+          'content_GTIN' => array (),
+          'content_duplicates' => array (),
+          'content_detailer_complete' => array (),
+          'content_attribute_complete' => array (),
       ),
       ),
       'view_all_models' => array(

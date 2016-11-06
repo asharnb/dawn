@@ -115,7 +115,7 @@ public function get($type) {
   $total_count = 0;
   $total_filtererd = 0;
 
-  $bundles = array('product_new');
+  $bundles = array('dawn_products');
 
   $total_count = \Drupal::entityQuery('node')
   ->condition('type', $bundles, 'IN')
@@ -142,7 +142,7 @@ public function get($type) {
         $orCondition = $query->orConditionGroup();
         $orCondition->condition('title', db_like($value) . '%', 'LIKE');
         $orCondition->condition('field_product_title', db_like($value) . '%', 'LIKE');
-        $orCondition->condition('field_jira_reference', db_like($value) . '%', 'LIKE');
+        $orCondition->condition('field_product_jira_number', db_like($value) . '%', 'LIKE');
         $orCondition->condition('field_product_category', db_like($value) . '%', 'LIKE');
 
         $query->condition($orCondition);
@@ -250,7 +250,7 @@ public function getProducts($result) {
         $product_category = $product_category_val[0]['value'];
       }
 
-      $product_color_val = $current_product->field_product_color->getValue();
+      $product_color_val = $current_product->field_product_color_name->getValue();
       if ($product_color_val) {
         $product_color = $product_color_val[0]['value'];
       }
@@ -260,12 +260,12 @@ public function getProducts($result) {
         $product_size = $product_size_val[0]['value'];
       }
 
-      $product_jira_val = $current_product->field_jira_reference->getValue();
+      $product_jira_val = $current_product->field_product_jira_number->getValue();
       if ($product_jira_val) {
         $product_jira = $product_jira_val[0]['value'];
       }
 
-      $product_seller_val = $current_product->field_seller_name->getValue();
+      $product_seller_val = $current_product->field_product_seller->getValue();
       if ($product_seller_val) {
         $product_seller = $product_seller_val[0]['value'];
       }

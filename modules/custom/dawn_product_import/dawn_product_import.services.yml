@@ -1,0 +1,13 @@
+services:
+  dawn.product:
+    class: Drupal\dawn_product_import\ProductService
+    arguments: ["@database", "@current_user", "@entity.manager", "@state", "@entity.query"]
+
+  dawn.studio:
+    class: Drupal\dawn_product_import\StudioService
+    arguments: ["@database", "@entity.manager", "@state", "@current_user", "@entity.query"]
+
+  dawn.warehouse:
+    class: Drupal\dawn_product_import\WarehouseService
+    arguments: ["@state", "@database", "@entity.manager", "@entity.query", "@current_user"]
+

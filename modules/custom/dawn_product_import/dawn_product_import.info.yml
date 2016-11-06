@@ -1,0 +1,5 @@
+name: dawn product import
+type: module
+description: Module to import csv data by batch process.
+core: 8.x
+package: Dawn

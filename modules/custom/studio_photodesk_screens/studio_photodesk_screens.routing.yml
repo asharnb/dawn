@@ -75,3 +75,10 @@ studio_photodesk_screens.view_PDP_controller:
     _controller: '\Drupal\studio_photodesk_screens\Controller\ViewPDPController::content'
   requirements:
     _permission: 'access content'
+
+studio_photodesk_screens.dashboard:
+  path: '/dashboard'
+  defaults:
+    _controller: '\Drupal\studio_photodesk_screens\Controller\ViewDashboard::content'
+  requirements:
+    _permission: 'access content'

@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains dawn_product_import.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function dawn_product_import_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the dawn_product_import module.
+    case 'help.page.dawn_product_import':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Module to import csv data by batch process.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
