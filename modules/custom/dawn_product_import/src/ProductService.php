@@ -77,7 +77,7 @@ class ProductService implements ProductServiceInterface {
    */
    public function getProductByGTIN($title) {
      $result = $this->entity_query->get('node')
-       ->condition('type', 'dawn_products')
+       ->condition('type', 'product_new')
        ->condition('title', $title)
        ->range(0, 1)
        ->execute();
