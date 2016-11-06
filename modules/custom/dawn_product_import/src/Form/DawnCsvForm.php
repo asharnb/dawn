@@ -163,7 +163,7 @@ function import_process_operation($dataSet, $type, &$context, $data) {
 
       $product_exists = $product->getProductByGTIN($datasetvalue[0]);
       if ($product_exists){
-        $node = reset($product_exists)
+        $node = reset($product_exists);
         Node::load($nid)->delete();
       } else
       {
