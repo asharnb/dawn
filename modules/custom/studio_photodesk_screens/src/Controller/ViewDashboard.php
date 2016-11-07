@@ -256,7 +256,7 @@ return [
   '#theme' => 'view_dashboard',
   '#cache' => ['max-age' => 0],
   '#content_GTIN' => $result_content_gtin,
-  '#content_duplicates' => $result_today,
+  '#content_duplicates' => '',
   '#content_detailer_complete' => $result_content_detailer_complete,
   '#content_attribute_complete' => $result_content_attribute_complete,
 
