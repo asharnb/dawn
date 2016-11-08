@@ -62,6 +62,12 @@ function studio_photodesk_screens_theme($existing, $type, $theme, $path) {
           'content_duplicates' => array (),
           'content_detailer_complete' => array (),
           'content_attribute_complete' => array (),
+          'content_complete' => array (),
+          'content_english_complete' => array (),
+          'content_arabic_complete'=> array (),
+          'studio_GTIN'=> array (),
+          'studio_GTIN_issues' => array (),
+          'studio_GTIN_complete' => array (),
       ),
       ),
       'view_all_models' => array(

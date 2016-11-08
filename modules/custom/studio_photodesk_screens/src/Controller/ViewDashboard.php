@@ -221,11 +221,34 @@ public function content()
   $day_end = strtotime(date('Y-m-d 23:59:59', time()));
 
 
+//Overall Work flow
+
     $query_content_gtin = \Drupal::entityQuery('node');
     $result_content_gtin = $query_content_gtin
       ->condition('type', 'dawn_products')
       ->count()
       ->execute();
+
+  $query_content_completion = \Drupal::entityQuery('node');
+  $result_content_completion = $query_content_completion
+    ->condition('type', 'dawn_products')
+    ->condition('field_product_detailer_status', 'Completed');
+
+  $orCondition = $query_content_completion->orConditionGroup()
+    ->condition('field_product_attribute_status', 'Completed-PIC')
+    ->condition('field_product_attribute_status', 'Completed-Detailer')
+    ->condition('field_product_attribute_status', 'Completed-Outsource');
+
+  $result_content_completion = $query_content_completion
+    ->condition($orCondition)
+    ->condition('field_product_english_copy', 'Completed')
+    ->count()
+    ->execute();
+
+
+//MISSING: STUDIO and Overall
+
+
 
     $query_content_detailer_complete = \Drupal::entityQuery('node');
     $result_content_detailer_complete = $query_content_detailer_complete
@@ -234,32 +257,66 @@ public function content()
       ->count()
       ->execute();
 
-
     $query_content_detailer_complete = \Drupal::entityQuery('node');
     $result_content_attribute_complete = $query_content_detailer_complete
       ->condition('type', 'dawn_products');
-
     $orCondition = $query_content_detailer_complete->orConditionGroup()
       ->condition('field_product_attribute_status', 'Completed-PIC')
       ->condition('field_product_attribute_status', 'Completed-Detailer')
       ->condition('field_product_attribute_status', 'Completed-Outsource');
-
     $result_content_attribute_complete = $query_content_detailer_complete
       ->condition($orCondition)
       ->count()
       ->execute();
 
+    $query_english_complete = \Drupal::entityQuery('node');
+    $result_english_complete = $query_english_complete
+      ->condition('type', 'dawn_products')
+      ->condition('field_product_english_copy', 'Completed')
+      ->count()
+      ->execute();
 
+    $query_arabic_complete = \Drupal::entityQuery('node');
+    $result_arabic_complete = $query_arabic_complete
+      ->condition('type', 'dawn_products')
+      ->condition('field_product_arabic_copy', 'Completed')
+      ->count()
+      ->execute();
+
+
+    $query_studio_gtin = \Drupal::entityQuery('node');
+    $result_studio_gtin = $query_studio_gtin
+      ->condition('type', 'studio_products')
+      ->count()
+      ->execute();
+
+    $query_studio_gtin_unmapped = \Drupal::entityQuery('node');
+    $result_studio_gtin_unmapped = $query_studio_gtin_unmapped
+      ->condition('type', 'unmapped_studio_products')
+      ->count()
+      ->execute();
+
+    $query_studio_gtin_complete = \Drupal::entityQuery('node');
+    $result_studio_gtin_complete = $query_studio_gtin_complete
+      ->condition('type', 'studio_products')
+      ->condition('field_date_received_retouching', '', '<>')
+      ->count()
+      ->execute();
 
 //return array to render
 return [
   '#theme' => 'view_dashboard',
   '#cache' => ['max-age' => 0],
+  '#content_complete' => $result_content_completion,
   '#content_GTIN' => $result_content_gtin,
   '#content_duplicates' => '',
   '#content_detailer_complete' => $result_content_detailer_complete,
   '#content_attribute_complete' => $result_content_attribute_complete,
-
+  '#content_english_complete' => $result_english_complete,
+  '#content_arabic_complete' => $result_arabic_complete,
+  '#studio_GTIN' => $result_studio_gtin,
+  '#studio_GTIN_issues' => $result_studio_gtin_unmapped,
+  '#studio_GTIN_complete' => $result_studio_gtin_complete,
   '#attached' => array(
     'library' => array(
       'studio_photodesk_screens/studiobridge-sessions'

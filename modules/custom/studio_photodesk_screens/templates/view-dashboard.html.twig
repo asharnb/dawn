@@ -4,7 +4,7 @@
   <div class="col-lg-8">
     <div class="panel panel-default equalheight">
       <div class="panel-heading">
-        <div class="panel-title">Overall Summary
+        <div class="panel-title">Production Workflow
         </div>
 
       </div>
@@ -13,23 +13,23 @@
 
         <div class="col-sm-12 no-margins no-padding ">
           <div class="col-sm-12">
+            <div class="col-sm-3">
+              <h5 class="m-sm">Total GTINs</h5>
+              <h3 class="m-sm">{{content_GTIN|number_format(0, '.', ',')}}</h3>
+            </div>
+
             <div class="col-sm-3 m-l-n">
-              <h5 class="m-sm">Content GTIN</h5>
-              <h3 class="m-sm bold">{{content_GTIN|number_format(0, '.', ',')}}</h3>
+              <h5 class="m-sm">Content Complete</h5>
+              <h3 class="m-sm">{{content_complete|number_format(0, '.', ',')}}</h3>
             </div>
 
             <div class="col-sm-3">
-              <h5 class="m-sm">Studio GTIN</h5>
-              <h3 class="m-sm">0</h3>
-            </div>
-
-            <div class="col-sm-3">
-              <h5 class="m-sm">Warehouse GTIN</h5>
+              <h5 class="m-sm">Studio Complete</h5>
               <h3 class="m-sm ">0</h3>
             </div>
             <div class="col-sm-3">
-              <h5 class="m-sm">Live GTIN</h5>
-              <h3 class="m-sm text-success">0</h3>
+              <h5 class="m-sm">Complete</h5>
+              <h3 class="m-sm text-success bold">0</h3>
             </div>
           </div>
 
@@ -80,23 +80,24 @@
 
         <div class="col-sm-12 no-margins no-padding ">
           <div class="col-sm-12">
-            <div class="col-sm-3 m-l-n">
-              <h5 class="m-sm">Total GTINS</h5>
-              <h3 class="m-sm bold">{{ content_GTIN|number_format(0, '.', ',')  }}</h3>
-            </div>
-
-            <div class="col-sm-3">
-              <h5 class="m-sm">Duplicates</h5>
-              <h3 class="m-sm text-danger">0</h3>
-            </div>
 
             <div class="col-sm-3">
               <h5 class="m-sm">Detailer Complete</h5>
-              <h3 class="m-sm text-success">{{ content_detailer_complete|number_format(0, '.', ',')  }}</h3>
+              <h3 class="m-sm">{{ content_detailer_complete|number_format(0, '.', ',')  }}</h3>
             </div>
             <div class="col-sm-3">
               <h5 class="m-sm">Attribute Complete</h5>
-              <h3 class="m-sm text-success">{{ content_attribute_complete|number_format(0, '.', ',')  }}</h3>
+              <h3 class="m-sm ">{{ content_attribute_complete|number_format(0, '.', ',')  }}</h3>
+            </div>
+
+            <div class="col-sm-3 m-l-n">
+              <h5 class="m-sm">English Complete</h5>
+              <h3 class="m-sm">{{ content_english_complete|number_format(0, '.', ',')  }}</h3>
+            </div>
+
+            <div class="col-sm-3">
+              <h5 class="m-sm">Arabic Complete</h5>
+              <h3 class="m-sm ">{{ content_arabic_complete|number_format(0, '.', ',')  }}</h3>
             </div>
           </div>
 
@@ -123,22 +124,22 @@
         <div class="col-sm-12 no-margins no-padding ">
           <div class="col-sm-12">
             <div class="col-sm-3 m-l-n">
-              <h5 class="m-sm">In Queue</h5>
-              <h3 class="m-sm bold">0</h3>
+              <h5 class="m-sm">Studio GTINs</h5>
+              <h3 class="m-sm">{{studio_GTIN|number_format(0, '.', ',')}}</h3>
             </div>
 
             <div class="col-sm-3">
-              <h5 class="m-sm">Pending</h5>
-              <h3 class="m-sm text-warning">0</h3>
+              <h5 class="m-sm">Unmapped GTINs</h5>
+              <h3 class="m-sm">{{studio_GTIN_issues|number_format(0, '.', ',')}}</h3>
             </div>
 
             <div class="col-sm-3">
               <h5 class="m-sm">Shot/Sourced</h5>
-              <h3 class="m-sm text-success">0</h3>
+              <h3 class="m-sm">0</h3>
             </div>
             <div class="col-sm-3">
               <h5 class="m-sm">Complete</h5>
-              <h3 class="m-sm text-success">0</h3>
+              <h3 class="m-sm">{{studio_GTIN_complete|number_format(0, '.', ',')}}</h3>
             </div>
           </div>
 

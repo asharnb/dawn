@@ -85,6 +85,7 @@ class ProductService implements ProductServiceInterface {
    }
 
 
+
    public function AddDawnProduct($datasetvalue) {
 
      $values = array(
@@ -113,5 +114,18 @@ class ProductService implements ProductServiceInterface {
 
    }
 
+   public function AddUnmappedDawnProduct($datasetvalue) {
+
+     $values = array(
+       'nid' => NULL,
+       'type' => 'unmapped_dawn_products',
+       'title' => $datasetvalue[0],
+     );
+     // Create new node entity.
+     $node = Node::create($values);
+     // Save unmapped node entity.
+     $node->save();
+
+   }
 
 }

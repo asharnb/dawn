@@ -97,12 +97,17 @@ public function buildForm(array $form, FormStateInterface $form_state) {
     '#title' => $this->t('WareHouse CSV URL'),
     '#maxlength' => 250,
     '#size' => 250,
+
   );
   $form['studio_csv_url'] = array(
     '#type' => 'textfield',
     '#title' => $this->t('Studio CSV URL'),
     '#maxlength' => 250,
     '#size' => 250,
+    '#description' => '$csv',
+    '#value' => 'https://docs.google.com/spreadsheets/d/1gdbU40z5z0ePqyKaHYIg2mI7wIVhwfNcTRf79dFCj6k/pub?gid=1770884310&single=true&output=csv',
+    '#desription' => 'https://docs.google.com/spreadsheets/d/1gdbU40z5z0ePqyKaHYIg2mI7wIVhwfNcTRf79dFCj6k/pub?gid=1770884310&single=true&output=csv'
+
   );
 
   $form['submit'] = array(
@@ -122,7 +127,7 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
   $csvfile = $form_state->getValue('product_csv_url');
 
   // Find which is importing ? product or warehouse or studio
-  $type = 'product'; //@todo : temparory solution.
+  $type = 'studio'; //@todo : temparory solution.
 
   $file = file($csvfile);
   $csv = array_map('str_getcsv', $file);
@@ -148,9 +153,9 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
 
 function import_process_operation($dataSet, $type, &$context, $data) {
 
-
+  $deletearray = array();
   $product =  \Drupal::service('dawn.product');
-  $nodestorage = \Drupal::service('entity_type.manager');
+  $studio =  \Drupal::service('dawn.studio');
 
   $context['sandbox']['progress']++;
   $context['sandbox']['current_letter'] = $dataSet[0][0];
@@ -158,6 +163,35 @@ function import_process_operation($dataSet, $type, &$context, $data) {
   // Check for node that exist in the system by GTIN value.
   // If exist then update the product data & set state value.
 
+  //Adding Studio Products, if type is studio
+  // foreach($dataSet as $datasetvalue){
+  //   if(is_numeric($datasetvalue[1])){
+  //
+  //     //if product is in Dawn Products
+  //     $product_exists_in_dawn = $product->getProductByGTIN($datasetvalue[1]);
+  //     if ($product_exists_in_dawn){
+  //       //But not in studio
+  //       $product_exists_in_studio = $studio->getStudioProductByGTIN($datasetvalue[1]);
+  //
+  //         if (!$product_exists_in_studio){
+  //
+  //           $studio->AddStudioProduct($datasetvalue);
+  //
+  //         } //STILL TODO:UPDATE IF EXISTS
+  //
+  //     } else
+  //     {
+  //       $studio->AddUnmappedStudioProduct($datasetvalue);
+  //
+  //     }
+  //
+  //     $context['message'] = $datasetvalue[0] . ' processed.';
+  //     $context['results'][] = $datasetvalue[0];
+  //   }
+  // }
+
+
+  //Adding Dawn Products, if type is products
   foreach($dataSet as $datasetvalue){
     if(is_numeric($datasetvalue[0])){
 
@@ -173,10 +207,26 @@ function import_process_operation($dataSet, $type, &$context, $data) {
 
       $context['message'] = $datasetvalue[0] . ' processed.';
       $context['results'][] = $datasetvalue[0];
+    }else{
+
+
+      $product->AddUnmappedDawnProduct($datasetvalue);
     }
   }
 
+  //To delete products
 
+  // foreach($dataSet as $datasetvalue){
+  //   if(is_numeric($datasetvalue[1])){
+  //
+  //     $product_exists = $studio->getStudioProductByGTIN($datasetvalue[1]);
+  //     if ($product_exists){
+  //       $deletearray[] = reset($product_exists);
+  //     }
+  //
+  //   }
+  // }
+  // entity_delete_multiple('node', $deletearray);
 
 }
 
