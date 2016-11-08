@@ -124,7 +124,7 @@ public function buildForm(array $form, FormStateInterface $form_state) {
 public function submitForm(array &$form, FormStateInterface $form_state) {
   ini_set('auto_detect_line_endings', TRUE);
   $operations = [];
-  $csvfile = $form_state->getValue('studio_csv_url');
+  $csvfile = $form_state->getValue('product_csv_url');
 
   // Find which is importing ? product or warehouse or studio
   $type = 'studio'; //@todo : temparory solution.
@@ -142,7 +142,7 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
   }
 
   $batch = array(
-    'title' => t('Processing Smack My Batch'),
+    'title' => t('Importing Data'),
     'operations' => $operations,
     //'progress_message' =>  t('Completed @current of @total Records from csv file.... Available placeholders are @current, @remaining, @total, @percentage, @estimate and @elapsed')
     'progress_message' =>  t('Completed @current of @total Records from csv file.... Estimation time: @estimate; @elapsed taken till now'),
@@ -160,62 +160,59 @@ function import_process_operation($dataSet, $type, &$context, $data) {
   $context['sandbox']['progress']++;
   $context['sandbox']['current_letter'] = $dataSet[0][0];
 
-  // Check for node that exist in the system by GTIN value.
-  // If exist then update the product data & set state value.
-
   //
   //Adding Dawn Products, if type is products
   //
-  // foreach($dataSet as $datasetvalue){
-  //   if(is_numeric($datasetvalue[0])){
-  //
-  //     $product_exists = $product->getProductByGTIN($datasetvalue[0]);
-  //     if ($product_exists){
-  //       // $node = reset($product_exists);
-  //       // Node::load($node)->delete();
-  //     } else
-  //     {
-  //       $product->AddDawnProduct($datasetvalue);
-  //
-  //     }
-  //
-  //     $context['message'] = $datasetvalue[0] . ' processed.';
-  //     $context['results'][] = $datasetvalue[0];
-  //   }else{
-  //
-  //
-  //     $product->AddUnmappedDawnProduct($datasetvalue);
-  //   }
-  // }
-
-  //
-  //Adding Studio Products, if type is studio
-  //
   foreach($dataSet as $datasetvalue){
-    if(is_numeric($datasetvalue[1])){
+    if(is_numeric($datasetvalue[0])){
 
-      //if product is in Dawn Products
-      $product_exists_in_dawn = $product->getProductByGTIN($datasetvalue[1]);
-      if ($product_exists_in_dawn){
-        //But not in studio
-        $product_exists_in_studio = $studio->getStudioProductByGTIN($datasetvalue[1]);
+      $product_exists = $product->getProductByGTIN($datasetvalue[0]);
+      if ($product_exists){
 
-          if (!$product_exists_in_studio){
-
-            $studio->AddStudioProduct($datasetvalue);
-
-          } //STILL TODO:UPDATE IF EXISTS
-
+        //$product->UpdateDawnProduct($product_exists,$datasetvalue);
       } else
       {
-        $studio->AddUnmappedStudioProduct($datasetvalue);
+        $product->AddDawnProduct($datasetvalue);
 
       }
 
       $context['message'] = $datasetvalue[0] . ' processed.';
       $context['results'][] = $datasetvalue[0];
+    }else{
+
+
+      $product->AddUnmappedDawnProduct($datasetvalue);
     }
   }
+
+  //
+  //Adding Studio Products, if type is studio
+  //
+  // foreach($dataSet as $datasetvalue){
+  //   if(is_numeric($datasetvalue[1])){
+  //
+  //     //if product is in Dawn Products
+  //     $product_exists_in_dawn = $product->getProductByGTIN($datasetvalue[1]);
+  //     if ($product_exists_in_dawn){
+  //       //But not in studio
+  //       $product_exists_in_studio = $studio->getStudioProductByGTIN($datasetvalue[1]);
+  //
+  //         if (!$product_exists_in_studio){
+  //
+  //           $studio->AddStudioProduct($datasetvalue);
+  //
+  //         } //STILL TODO:UPDATE IF EXISTS
+  //
+  //     } else
+  //     {
+  //       $studio->AddUnmappedStudioProduct($datasetvalue);
+  //
+  //     }
+  //
+  //     $context['message'] = $datasetvalue[0] . ' processed.';
+  //     $context['results'][] = $datasetvalue[0];
+  //   }
+  // }
 
   //To delete products
 
