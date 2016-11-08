@@ -124,7 +124,7 @@ public function buildForm(array $form, FormStateInterface $form_state) {
 public function submitForm(array &$form, FormStateInterface $form_state) {
   ini_set('auto_detect_line_endings', TRUE);
   $operations = [];
-  $csvfile = $form_state->getValue('product_csv_url');
+  $csvfile = $form_state->getValue('studio_csv_url');
 
   // Find which is importing ? product or warehouse or studio
   $type = 'studio'; //@todo : temparory solution.
@@ -163,54 +163,57 @@ function import_process_operation($dataSet, $type, &$context, $data) {
   // Check for node that exist in the system by GTIN value.
   // If exist then update the product data & set state value.
 
-  //Adding Studio Products, if type is studio
+  //
+  //Adding Dawn Products, if type is products
+  //
   // foreach($dataSet as $datasetvalue){
-  //   if(is_numeric($datasetvalue[1])){
+  //   if(is_numeric($datasetvalue[0])){
   //
-  //     //if product is in Dawn Products
-  //     $product_exists_in_dawn = $product->getProductByGTIN($datasetvalue[1]);
-  //     if ($product_exists_in_dawn){
-  //       //But not in studio
-  //       $product_exists_in_studio = $studio->getStudioProductByGTIN($datasetvalue[1]);
-  //
-  //         if (!$product_exists_in_studio){
-  //
-  //           $studio->AddStudioProduct($datasetvalue);
-  //
-  //         } //STILL TODO:UPDATE IF EXISTS
-  //
+  //     $product_exists = $product->getProductByGTIN($datasetvalue[0]);
+  //     if ($product_exists){
+  //       // $node = reset($product_exists);
+  //       // Node::load($node)->delete();
   //     } else
   //     {
-  //       $studio->AddUnmappedStudioProduct($datasetvalue);
+  //       $product->AddDawnProduct($datasetvalue);
   //
   //     }
   //
   //     $context['message'] = $datasetvalue[0] . ' processed.';
   //     $context['results'][] = $datasetvalue[0];
+  //   }else{
+  //
+  //
+  //     $product->AddUnmappedDawnProduct($datasetvalue);
   //   }
   // }
 
-
-  //Adding Dawn Products, if type is products
+  //
+  //Adding Studio Products, if type is studio
+  //
   foreach($dataSet as $datasetvalue){
-    if(is_numeric($datasetvalue[0])){
+    if(is_numeric($datasetvalue[1])){
 
-      $product_exists = $product->getProductByGTIN($datasetvalue[0]);
-      if ($product_exists){
-        // $node = reset($product_exists);
-        // Node::load($node)->delete();
+      //if product is in Dawn Products
+      $product_exists_in_dawn = $product->getProductByGTIN($datasetvalue[1]);
+      if ($product_exists_in_dawn){
+        //But not in studio
+        $product_exists_in_studio = $studio->getStudioProductByGTIN($datasetvalue[1]);
+
+          if (!$product_exists_in_studio){
+
+            $studio->AddStudioProduct($datasetvalue);
+
+          } //STILL TODO:UPDATE IF EXISTS
+
       } else
       {
-        $product->AddDawnProduct($datasetvalue);
+        $studio->AddUnmappedStudioProduct($datasetvalue);
 
       }
 
       $context['message'] = $datasetvalue[0] . ' processed.';
       $context['results'][] = $datasetvalue[0];
-    }else{
-
-
-      $product->AddUnmappedDawnProduct($datasetvalue);
     }
   }
 
