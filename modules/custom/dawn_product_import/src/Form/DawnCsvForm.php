@@ -168,8 +168,9 @@ function import_process_operation($dataSet, $type, &$context, $data) {
 
       $product_exists = $product->getProductByGTIN($datasetvalue[0]);
       if ($product_exists){
+        $nid = reset($product_exists);
+        $product->UpdateDawnProduct($nid,$datasetvalue);
 
-        //$product->UpdateDawnProduct($product_exists,$datasetvalue);
       } else
       {
         $product->AddDawnProduct($datasetvalue);

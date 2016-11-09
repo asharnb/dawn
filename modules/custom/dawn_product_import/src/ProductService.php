@@ -106,7 +106,7 @@ class ProductService implements ProductServiceInterface {
       'field_product_supplier_sku' => $datasetvalue[12],
       'field_product_date_received' => $datasetvalue[14],
       'field_product_jira_number' => $datasetvalue[15],
-      'field_product_jira_number' => '1',
+      'field_product_update_token' => '1',
     );
     // Create new node entity.
     $node = Node::create($values);
@@ -133,6 +133,7 @@ class ProductService implements ProductServiceInterface {
   public function UpdateDawnProduct($nid, $datasetvalue) {
 
     $node = Node::load($nid);
+
 
     $product_brand = array(
       'value' => $datasetvalue[1]
@@ -196,7 +197,7 @@ class ProductService implements ProductServiceInterface {
       $node->field_product_jira_number->setValue($product_jira_number);
       $node->field_update_token->setValue($update_token);
 
-
+      $node->save();
   }
 
 }
