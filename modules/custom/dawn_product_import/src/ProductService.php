@@ -135,6 +135,9 @@ class ProductService implements ProductServiceInterface {
     $node = Node::load($nid);
 
 
+    if(!$node->field_product_brand->getValue() == '1')
+    {
+
     $product_brand = array(
       'value' => $datasetvalue[1]
     );
@@ -198,6 +201,8 @@ class ProductService implements ProductServiceInterface {
       $node->field_update_token->setValue($update_token);
 
       $node->save();
+
+    }
   }
 
 }
