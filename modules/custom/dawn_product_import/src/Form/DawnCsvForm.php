@@ -125,7 +125,7 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
   ini_set('auto_detect_line_endings', TRUE);
   $operations = [];
 
-  $type = ['production', 'studio'];
+  $type = ['production'];
   //clear existing Database
   $product =  \Drupal::service('dawn.product');
   $studio =  \Drupal::service('dawn.studio');
