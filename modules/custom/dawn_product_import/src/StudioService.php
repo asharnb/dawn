@@ -70,11 +70,7 @@ class StudioService implements StudioServiceInterface {
      *
      */
   public function getStudioProductByGTIN($title) {
-    $result = $this->entity_query->get('node')
-      ->condition('type', 'studio_products')
-      ->condition('title', $title)
-      ->range(0, 1)
-      ->execute();
+    $result = db_query("select product_gtin from studio_data where product_gtin='$title'")->fetchAll();
     return $result;
   }
 
@@ -82,43 +78,63 @@ class StudioService implements StudioServiceInterface {
   /*
    *
    */
-   public function AddStudioProduct($datasetvalue) {
+   public function AddStudioProductDB($datasetvalue) {
 
-     $values = array(
-       'nid' => NULL,
-       'type' => 'studio_products',
-       'title' => $datasetvalue[1],
-       'field_status_image_recieved' => $datasetvalue[5],
-       'field_model_shoot_required' => $datasetvalue[6],
-       'field_all_images_received' => $datasetvalue[7],
-       'field_date_images_received' => $datasetvalue[8],
-       'field_reshoot_required' => $datasetvalue[9],
-       'field_agency_name' => $datasetvalue[10],
-       'field_date_sent_retouching' => $datasetvalue[12],
-       'field_date_received_retouching' => $datasetvalue[13],
-       'field_qc_person' => $datasetvalue[14],
-     );
-     // Create new node entity.
-     $node = Node::create($values);
-     // Save unmapped node entity.
-     $node->save();
 
+     $gtin = str_replace(' ', '', $datasetvalue[1]);
+     $gtin = trim($gtin);
+
+
+     db_insert('studio_data')
+       ->fields(array(
+          'id' => NULL,
+          'product_jira_number'=>mysql_real_escape_string($datasetvalue[0]),
+          'product_gtin'=>mysql_real_escape_string($datasetvalue[1]),
+          'product_category'=>mysql_real_escape_string($datasetvalue[2]),
+          'product_seller_name'=>mysql_real_escape_string($datasetvalue[3]),
+          'product_brand'=>mysql_real_escape_string($datasetvalue[4]),
+          'product_images_status'=>mysql_real_escape_string($datasetvalue[5]),
+          'product_model_shoot'=>mysql_real_escape_string($datasetvalue[6]),
+          'product_images_received'=>mysql_real_escape_string($datasetvalue[7]),
+          'date_received_studio'=>mysql_real_escape_string($datasetvalue[8]),
+          'reshoot_required'=>mysql_real_escape_string($datasetvalue[9]),
+          'agency_name'=>mysql_real_escape_string($datasetvalue[10]),
+          'number_of_images'=>mysql_real_escape_string($datasetvalue[11]),
+          'date_sent_retouching'=>mysql_real_escape_string($datasetvalue[12]),
+          'date_received_retouching'=>mysql_real_escape_string($datasetvalue[13]),
+          'qc_person'=>mysql_real_escape_string($datasetvalue[14]),
+          'upload_date'=>mysql_real_escape_string($datasetvalue[15]),
+          'photographer'=>mysql_real_escape_string($datasetvalue[16]),
+       ))
+       ->execute();
    }
+
+
 
    /*
     *
     */
-    public function AddUnmappedStudioProduct($datasetvalue) {
+    public function AddUnmappedStudioProductDB($datasetvalue) {
 
-      $values = array(
-        'nid' => NULL,
-        'type' => 'unmapped_studio_products',
-        'title' => $datasetvalue[1]
-      );
-      // Create new node entity.
-      $node = Node::create($values);
-      // Save unmapped node entity.
-      $node->save();
+      $gtin = str_replace(' ', '', $datasetvalue[1]);
+      $gtin = trim($gtin);
 
+      db_insert('unmapped_studio_data')
+        ->fields(array(
+          'id' => NULL,
+          'product_gtin' => mysql_real_escape_string($gtin),
+          'product_jira_number' => mysql_real_escape_string($datasetvalue[0]),
+        ))
+        ->execute();
+
+    }
+
+
+    public function clearProducts() {
+
+      $result = db_query("delete from studio_data")->execute();
+
+      $result = db_query("delete from unmapped_studio_data")->execute();
+      return $result;
     }
 }

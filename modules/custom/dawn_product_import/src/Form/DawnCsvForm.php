@@ -94,7 +94,7 @@ public function buildForm(array $form, FormStateInterface $form_state) {
   );
   $form['warehouse_csv_url'] = array(
     '#type' => 'textfield',
-    '#title' => $this->t('WareHouse CSV URL'),
+    '#title' => $this->t('Warehouse CSV URL'),
     '#maxlength' => 250,
     '#size' => 250,
 
@@ -124,7 +124,7 @@ public function buildForm(array $form, FormStateInterface $form_state) {
 public function submitForm(array &$form, FormStateInterface $form_state) {
   ini_set('auto_detect_line_endings', TRUE);
   $operations = [];
-  $csvfile = $form_state->getValue('product_csv_url');
+  $csvfile = $form_state->getValue('studio_csv_url');
 
   // Find which is importing ? product or warehouse or studio
   $type = 'studio'; //@todo : temparory solution.
@@ -135,7 +135,15 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
   array_shift($csv);
 
   // Split an array into chunks; to decrease no.of operations.
-  $csv = array_chunk($csv,100);
+  $csv = array_chunk($csv,1000);
+
+  //clear existing Database
+  $product =  \Drupal::service('dawn.product');
+  $studio =  \Drupal::service('dawn.studio');
+
+  //$product->clearProducts();
+  $studio->clearProducts();
+
 
   foreach($csv as $data){
   $operations[] = array(array(get_class($this), 'import_process_operation'), array($data, $type));
@@ -151,7 +159,7 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
   batch_set($batch);
 }
 
-function import_process_operation($dataSet, $type, &$context, $data) {
+function import_process_operation($dataSet, $type, &$context) {
 
   $deletearray = array();
   $product =  \Drupal::service('dawn.product');
@@ -160,75 +168,71 @@ function import_process_operation($dataSet, $type, &$context, $data) {
   $context['sandbox']['progress']++;
   $context['sandbox']['current_letter'] = $dataSet[0][0];
 
+
+
+
   //
   //Adding Dawn Products, if type is products
   //
-  foreach($dataSet as $datasetvalue){
-    if(is_numeric($datasetvalue[0])){
+  // foreach($dataSet as $datasetvalue){
+  //
+  //   $gtin = str_replace(' ', '', $datasetvalue[0]);
+  //   $gtin = trim($gtin);
+  //
+  //
+  //   if(is_numeric($gtin)){
+  //
+  //     $product_exists = $product->getProductByGTIN($gtin);
+  //     if ($product_exists){
+  //       //$nid = reset($product_exists);
+  //       //$product->UpdateDawnProduct($nid,$datasetvalue);
+  //
+  //     } else
+  //     {
+  //       $product->AddDawnProductDB($datasetvalue);
+  //
+  //     }
+  //
+  //     $context['message'] = $gtin . ' processed.';
+  //
+  //   }else{
+  //
+  //
+  //     $product->AddUnmappedDawnProductDB($datasetvalue);
+  //   }
+  // }
 
-      $product_exists = $product->getProductByGTIN($datasetvalue[0]);
-      if ($product_exists){
-        $nid = reset($product_exists);
-        $product->UpdateDawnProduct($nid,$datasetvalue);
+
+  //Adding Studio Products, if type is studio
+
+  foreach($dataSet as $datasetvalue){
+    if(is_numeric($datasetvalue[1])){
+
+      //if product is in Dawn Products
+      $product_exists_in_dawn = $product->getProductByGTIN($datasetvalue[1]);
+      if ($product_exists_in_dawn){
+        //But not in studio
+        $product_exists_in_studio = $studio->getStudioProductByGTIN($datasetvalue[1]);
+
+          if (!$product_exists_in_studio){
+
+            $studio->AddStudioProductDB($datasetvalue);
+
+          } //STILL TODO:UPDATE IF EXISTS
 
       } else
       {
-        $product->AddDawnProduct($datasetvalue);
+        $studio->AddUnmappedStudioProductDB($datasetvalue);
 
       }
 
       $context['message'] = $datasetvalue[0] . ' processed.';
       $context['results'][] = $datasetvalue[0];
-    }else{
-
-
-      $product->AddUnmappedDawnProduct($datasetvalue);
     }
   }
 
-  //
-  //Adding Studio Products, if type is studio
-  //
-  // foreach($dataSet as $datasetvalue){
-  //   if(is_numeric($datasetvalue[1])){
-  //
-  //     //if product is in Dawn Products
-  //     $product_exists_in_dawn = $product->getProductByGTIN($datasetvalue[1]);
-  //     if ($product_exists_in_dawn){
-  //       //But not in studio
-  //       $product_exists_in_studio = $studio->getStudioProductByGTIN($datasetvalue[1]);
-  //
-  //         if (!$product_exists_in_studio){
-  //
-  //           $studio->AddStudioProduct($datasetvalue);
-  //
-  //         } //STILL TODO:UPDATE IF EXISTS
-  //
-  //     } else
-  //     {
-  //       $studio->AddUnmappedStudioProduct($datasetvalue);
-  //
-  //     }
-  //
-  //     $context['message'] = $datasetvalue[0] . ' processed.';
-  //     $context['results'][] = $datasetvalue[0];
-  //   }
-  // }
 
-  //To delete products
-
-  // foreach($dataSet as $datasetvalue){
-  //   if(is_numeric($datasetvalue[1])){
-  //
-  //     $product_exists = $studio->getStudioProductByGTIN($datasetvalue[1]);
-  //     if ($product_exists){
-  //       $deletearray[] = reset($product_exists);
-  //     }
-  //
-  //   }
-  // }
-  // entity_delete_multiple('node', $deletearray);
-
+  $context['results'][] = 'Processed';
 }
 
 function csv_batch_finished($success, $results, $operations) {

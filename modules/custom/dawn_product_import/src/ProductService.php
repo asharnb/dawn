@@ -76,133 +76,67 @@ class ProductService implements ProductServiceInterface {
   *
   */
   public function getProductByGTIN($title) {
-    $result = $this->entity_query->get('node')
-    ->condition('type', 'dawn_products')
-    ->condition('title', $title)
-    ->range(0, 1)
-    ->execute();
+
+    $result = db_query("select product_gtin from production_data where product_gtin='$title'")->fetchAll();
     return $result;
   }
 
+  public function AddDawnProductDB($datasetvalue) {
 
 
-  public function AddDawnProduct($datasetvalue) {
+    $gtin = str_replace(' ', '', $datasetvalue[0]);
+    $gtin = trim($gtin);
 
-    $values = array(
-      'nid' => NULL,
-      'type' => 'dawn_products',
-      'title' => $datasetvalue[0],
-      'field_product_brand' => $datasetvalue[1],
-      'field_product_seller' => $datasetvalue[2],
-      'field_product_model_number' => $datasetvalue[3],
-      'field_product_title' => $datasetvalue[4],
-      'field_product_category' => $datasetvalue[5],
-      'field_product_color_name' => $datasetvalue[6],
-      'field_product_size' => $datasetvalue[7],
-      'field_product_english_copy' => $datasetvalue[8],
-      'field_product_arabic_copy' => $datasetvalue[9],
-      'field_product_detailer_status' => $datasetvalue[10],
-      'field_product_attribute_status' => $datasetvalue[11],
-      'field_product_supplier_sku' => $datasetvalue[12],
-      'field_product_date_received' => $datasetvalue[14],
-      'field_product_jira_number' => $datasetvalue[15],
-      'field_product_update_token' => '1',
-    );
-    // Create new node entity.
-    $node = Node::create($values);
-    // Save unmapped node entity.
-    $node->save();
-
-  }
-
-  public function AddUnmappedDawnProduct($datasetvalue) {
-
-    $values = array(
-      'nid' => NULL,
-      'type' => 'unmapped_dawn_products',
-      'title' => $datasetvalue[0],
-    );
-    // Create new node entity.
-    $node = Node::create($values);
-    // Save unmapped node entity.
-    $node->save();
-
-  }
-
-
-  public function UpdateDawnProduct($nid, $datasetvalue) {
-
-    $node = Node::load($nid);
-
-
-    if(!$node->field_product_brand->getValue() == '1')
-    {
-
-    $product_brand = array(
-      'value' => $datasetvalue[1]
-    );
-    $product_seller = array(
-      'value' => $datasetvalue[2],
-    );
-    $product_model_no = array(
-      'value' => $datasetvalue[3],
-    );
-    $roduct_title = array(
-      'value' => $datasetvalue[4],
-    );
-    $product_category = array(
-      'value' => $datasetvalue[5],
-    );
-    $product_color_name = array(
-      'value' => $datasetvalue[6],
-    );
-    $product_size = array(
-      'value' => $datasetvalue[7],
-    );
-    $product_english_copy = array(
-      'value' => $datasetvalue[8],
-    );
-    $product_arabic_copy = array(
-      'value' => $datasetvalue[9],
-    );
-    $product_detailer_status = array(
-      'value' => $datasetvalue[10],
-    );
-    $product_attribute_status = array(
-      'value' => $datasetvalue[11],
-    );
-    $product_supplier_sku = array(
-      'value' => $datasetvalue[12],
-    );
-    $product_date_received= array(
-      'value' => $datasetvalue[14],
-    );
-    $product_jira_number = array(
-      'value' => $datasetvalue[15],
-    );
-    $update_token = array(
-      'value' => '1',
-    );
-
-      $node->field_product_brand->setValue($product_brand);
-      $node->field_product_seller->setValue($product_seller);
-      $node->field_product_model_number->setValue($product_model_number);
-      $node->field_product_title->setValue($product_title);
-      $node->field_product_category->setValue($product_category);
-      $node->field_product_color_name->setValue($product_color_name);
-      $node->field_product_size->setValue($product_size);
-      $node->field_product_english_copy->setValue($product_english_copy);
-      $node->field_product_arabic_copy->setValue($product_arabic_copy);
-      $node->field_product_detailer_status->setValue($product_detailer_status);
-      $node->field_product_attribute_status->setValue($product_attribute_status);
-      $node->field_product_supplier_sku->setValue($product_supplier_sku);
-      $node->field_product_date_received->setValue($product_date_received);
-      $node->field_product_jira_number->setValue($product_jira_number);
-      $node->field_update_token->setValue($update_token);
-
-      $node->save();
-
+      db_insert('production_data')
+        ->fields(array(
+          'id' => NULL,
+          'product_gtin' => mysql_real_escape_string($gtin),
+          'product_brand_name' => mysql_real_escape_string($datasetvalue[1]),
+          'product_seller_name' => mysql_real_escape_string($datasetvalue[2]),
+          'product_model_number' => mysql_real_escape_string($datasetvalue[3]),
+          'product_title' => mysql_real_escape_string(preg_replace('/\\\//', '/',$datasetvalue[4])),
+          'product_category' => mysql_real_escape_string($datasetvalue[5]),
+          'product_color_name' => mysql_real_escape_string($datasetvalue[6]),
+          'product_size' => mysql_real_escape_string($datasetvalue[7]),
+          'product_english_copy' => mysql_real_escape_string($datasetvalue[8]),
+          'product_arabic_copy' => mysql_real_escape_string($datasetvalue[9]),
+          'product_detailer_status' => mysql_real_escape_string($datasetvalue[10]),
+          'product_attribute_status' => mysql_real_escape_string($datasetvalue[11]),
+          'product_supplier_sku' => mysql_real_escape_string($datasetvalue[12]),
+          'product_gtin_validation' => mysql_real_escape_string($datasetvalue[13]),
+          'product_date_received' => mysql_real_escape_string($datasetvalue[14]),
+          'product_jira_number' => mysql_real_escape_string($datasetvalue[15]),
+          'product_count' => mysql_real_escape_string($datasetvalue[16]),
+        ))
+        ->execute();
     }
+
+
+
+    public function clearProducts() {
+
+      $result = db_query("delete from production_data")->execute();
+
+      $result = db_query("delete from unmapped_production_data")->execute();
+      return $result;
+    }
+
+
+
+  public function AddUnmappedDawnProductDB($datasetvalue) {
+
+    $gtin = str_replace(' ', '', $datasetvalue[0]);
+    $gtin = trim($gtin);
+
+    db_insert('unmapped_production_data')
+      ->fields(array(
+        'id' => NULL,
+        'product_gtin' => mysql_real_escape_string($gtin),
+        'product_jira_number' => mysql_real_escape_string($datasetvalue[15]),
+      ))
+      ->execute();
+
   }
+
 
 }
