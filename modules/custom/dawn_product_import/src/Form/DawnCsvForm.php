@@ -124,10 +124,6 @@ public function buildForm(array $form, FormStateInterface $form_state) {
 public function submitForm(array &$form, FormStateInterface $form_state) {
   ini_set('auto_detect_line_endings', TRUE);
   $operations = [];
-  //$csvfile = $form_state->getValue('studio_csv_url');
-
-  // Find which is importing ? product or warehouse or studio
-  //$type = 'studio'; //@todo : temparory solution.
 
   $type = ['production', 'studio'];
   //clear existing Database
@@ -139,11 +135,14 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
 
   foreach($type as $typeofdata){
 
+    $file = '';
+    $csv = '';
+
     $csvfiletype = $typeofdata. "_csv_url";
 
-    // echo $csvfiletype;
-    // die();
     $csvfile = $form_state->getValue($csvfiletype);
+
+
 
     $file = file($csvfile);
     $csv = array_map('str_getcsv', $file);
