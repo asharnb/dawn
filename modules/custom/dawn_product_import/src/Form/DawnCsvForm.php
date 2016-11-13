@@ -135,9 +135,6 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
 
   foreach($type as $typeofdata){
 
-    $file = '';
-    $csv = '';
-
     $csvfiletype = $typeofdata. "_csv_url";
 
     $csvfile = $form_state->getValue($csvfiletype);
