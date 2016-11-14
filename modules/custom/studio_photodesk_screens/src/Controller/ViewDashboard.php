@@ -279,6 +279,19 @@ public function content()
   $result_studio_gtin_complete = objectToArrayDashboard(db_query("select count(id) as count from studio_data
   WHERE date_received_retouching <> ''
   ")->fetchAll());
+
+
+  $result_overall_complete = objectToArrayDashboard(db_query("select count(pd.id) as count from production_data pd
+  LEFT JOIN studio_data sd on sd.product_gtin = pd.product_gtin
+  WHERE pd.product_detailer_status='Completed' AND
+  (pd.product_attribute_status='Completed-PIC' OR
+  pd.product_attribute_status='Completed-Detailer' OR
+  pd.product_attribute_status='Completed-Outsource') AND
+  pd.product_english_copy='Completed' AND
+  sd.date_received_retouching <> ''
+  ")->fetchAll());
+
+
 //return array to render
 return [
   '#theme' => 'view_dashboard',
@@ -293,6 +306,7 @@ return [
   '#studio_GTIN' => $result_studio_gtin,
   '#studio_GTIN_issues' => $result_studio_gtin_unmapped,
   '#studio_GTIN_complete' => $result_studio_gtin_complete,
+  '#overall_complete' => $result_overall_complete,
   '#attached' => array(
     'library' => array(
       'studio_photodesk_screens/studiobridge-sessions'
