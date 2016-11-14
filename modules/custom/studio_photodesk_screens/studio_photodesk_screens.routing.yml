@@ -82,3 +82,10 @@ studio_photodesk_screens.dashboard:
     _controller: '\Drupal\studio_photodesk_screens\Controller\ViewDashboard::content'
   requirements:
     _permission: 'access content'
+
+studio_photodesk_screens.vie_completed_list:
+  path: '/view-completed-list'
+  defaults:
+    _controller: '\Drupal\studio_photodesk_screens\Controller\ViewCompletedList::content'
+  requirements:
+    _permission: 'access content'

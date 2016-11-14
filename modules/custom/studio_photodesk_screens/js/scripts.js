@@ -57,6 +57,35 @@
     }
   };
 
+  Drupal.behaviors.completedtable = {
+    attach: function(context) {
+       var oTable = $('#dt_viewcompleted').DataTable( {
+        "bSort": true,
+        "bDestroy": true,
+        "iDisplayLength": 30,
+        "order": [[0 , 'desc']],
+        "autoWidth" : true,
+        "processing": true,
+        "serverSide": true,
+        "oLanguage": {
+         "sProcessing": "Please wait.."
+       },
+        "ajax": Drupal.url('products/complete?_format=json')
+      } );
+      $('#dt_search_box').keyup(function(){
+            oTable.search($(this).val()).draw() ;
+      })
+
+      $('#btn_search_reset').click(function(){
+            document.getElementById('dt_search_box').value = "";
+              oTable.search('').draw() ;
+      })
+
+      $('#dt_viewproducts_wrapper').addClass('m-t-n');
+    }
+  };
+
+
   Drupal.behaviors.modelsdatatable = {
     attach: function(context) {
        var oTable = $('#dt_viewmodels').DataTable( {

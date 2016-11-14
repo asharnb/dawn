@@ -83,7 +83,6 @@ class ProductService implements ProductServiceInterface {
 
   public function AddDawnProductDB($datasetvalue) {
 
-
     $gtin = str_replace(' ', '', $datasetvalue[0]);
     $gtin = trim($gtin);
 
@@ -94,7 +93,7 @@ class ProductService implements ProductServiceInterface {
           'product_brand_name' => mysql_real_escape_string($datasetvalue[1]),
           'product_seller_name' => mysql_real_escape_string($datasetvalue[2]),
           'product_model_number' => mysql_real_escape_string($datasetvalue[3]),
-          'product_title' => mysql_real_escape_string(preg_replace('/\\\//', '/',$datasetvalue[4])),
+          'product_title' => $this->clean($datasetvalue[4]),
           'product_category' => mysql_real_escape_string($datasetvalue[5]),
           'product_color_name' => mysql_real_escape_string($datasetvalue[6]),
           'product_size' => mysql_real_escape_string($datasetvalue[7]),
@@ -111,6 +110,14 @@ class ProductService implements ProductServiceInterface {
         ->execute();
     }
 
+
+    function clean($string) {
+       $string = str_replace(' ', '-rS-', $string); // Replaces all spaces with hyphens.
+
+       $string =  preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+
+       return str_replace('-rS-', ' ', $string); // Replaces all spaces with hyphens.
+    }
 
 
     public function clearProducts() {
