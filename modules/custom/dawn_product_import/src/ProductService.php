@@ -89,23 +89,23 @@ class ProductService implements ProductServiceInterface {
       db_insert('production_data')
         ->fields(array(
           'id' => NULL,
-          'product_gtin' => mysql_real_escape_string($gtin),
-          'product_brand_name' => mysql_real_escape_string($datasetvalue[1]),
-          'product_seller_name' => mysql_real_escape_string($datasetvalue[2]),
-          'product_model_number' => mysql_real_escape_string($datasetvalue[3]),
+          'product_gtin' => ($gtin),
+          'product_brand_name' => ($datasetvalue[1]),
+          'product_seller_name' => ($datasetvalue[2]),
+          'product_model_number' => ($datasetvalue[3]),
           'product_title' => $this->clean($datasetvalue[4]),
-          'product_category' => mysql_real_escape_string($datasetvalue[5]),
-          'product_color_name' => mysql_real_escape_string($datasetvalue[6]),
-          'product_size' => mysql_real_escape_string($datasetvalue[7]),
-          'product_english_copy' => mysql_real_escape_string($datasetvalue[8]),
-          'product_arabic_copy' => mysql_real_escape_string($datasetvalue[9]),
-          'product_detailer_status' => mysql_real_escape_string($datasetvalue[10]),
-          'product_attribute_status' => mysql_real_escape_string($datasetvalue[11]),
-          'product_supplier_sku' => mysql_real_escape_string($datasetvalue[12]),
-          'product_gtin_validation' => mysql_real_escape_string($datasetvalue[13]),
-          'product_date_received' => mysql_real_escape_string($datasetvalue[14]),
-          'product_jira_number' => mysql_real_escape_string($datasetvalue[15]),
-          'product_count' => mysql_real_escape_string($datasetvalue[16]),
+          'product_category' => ($datasetvalue[5]),
+          'product_color_name' => ($datasetvalue[6]),
+          'product_size' => ($datasetvalue[7]),
+          'product_english_copy' => ($datasetvalue[8]),
+          'product_arabic_copy' => ($datasetvalue[9]),
+          'product_detailer_status' => ($datasetvalue[10]),
+          'product_attribute_status' => ($datasetvalue[11]),
+          'product_supplier_sku' => ($datasetvalue[12]),
+          'product_gtin_validation' => ($datasetvalue[13]),
+          'product_date_received' => ($datasetvalue[14]),
+          'product_jira_number' => ($datasetvalue[15]),
+          'product_count' => ($datasetvalue[16]),
         ))
         ->execute();
     }
@@ -138,8 +138,8 @@ class ProductService implements ProductServiceInterface {
     db_insert('unmapped_production_data')
       ->fields(array(
         'id' => NULL,
-        'product_gtin' => mysql_real_escape_string($gtin),
-        'product_jira_number' => mysql_real_escape_string($datasetvalue[15]),
+        'product_gtin' => ($gtin),
+        'product_jira_number' => ($datasetvalue[15]),
       ))
       ->execute();
 
