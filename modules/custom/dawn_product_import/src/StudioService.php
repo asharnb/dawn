@@ -88,23 +88,23 @@ class StudioService implements StudioServiceInterface {
      db_insert('studio_data')
        ->fields(array(
           'id' => NULL,
-          'product_jira_number'=>mysql_real_escape_string($datasetvalue[0]),
-          'product_gtin'=>mysql_real_escape_string($datasetvalue[1]),
-          'product_category'=>mysql_real_escape_string($datasetvalue[2]),
-          'product_seller_name'=>mysql_real_escape_string($datasetvalue[3]),
-          'product_brand'=>mysql_real_escape_string($datasetvalue[4]),
-          'product_images_status'=>mysql_real_escape_string($datasetvalue[5]),
-          'product_model_shoot'=>mysql_real_escape_string($datasetvalue[6]),
-          'product_images_received'=>mysql_real_escape_string($datasetvalue[7]),
-          'date_received_studio'=>mysql_real_escape_string($datasetvalue[8]),
-          'reshoot_required'=>mysql_real_escape_string($datasetvalue[9]),
-          'agency_name'=>mysql_real_escape_string($datasetvalue[10]),
-          'number_of_images'=>mysql_real_escape_string($datasetvalue[11]),
-          'date_sent_retouching'=>mysql_real_escape_string($datasetvalue[12]),
-          'date_received_retouching'=>mysql_real_escape_string($datasetvalue[13]),
-          'qc_person'=>mysql_real_escape_string($datasetvalue[14]),
-          'upload_date'=>mysql_real_escape_string($datasetvalue[15]),
-          'photographer'=>mysql_real_escape_string($datasetvalue[16]),
+          'product_jira_number'=>($datasetvalue[0]),
+          'product_gtin'=>($datasetvalue[1]),
+          'product_category'=>($datasetvalue[2]),
+          'product_seller_name'=>($datasetvalue[3]),
+          'product_brand'=>($datasetvalue[4]),
+          'product_images_status'=>($datasetvalue[5]),
+          'product_model_shoot'=>($datasetvalue[6]),
+          'product_images_received'=>($datasetvalue[7]),
+          'date_received_studio'=>($datasetvalue[8]),
+          'reshoot_required'=>($datasetvalue[9]),
+          'agency_name'=>($datasetvalue[10]),
+          'number_of_images'=>($datasetvalue[11]),
+          'date_sent_retouching'=>($datasetvalue[12]),
+          'date_received_retouching'=>($datasetvalue[13]),
+          'qc_person'=>($datasetvalue[14]),
+          'upload_date'=>($datasetvalue[15]),
+          'photographer'=>($datasetvalue[16]),
        ))
        ->execute();
    }
@@ -122,8 +122,8 @@ class StudioService implements StudioServiceInterface {
       db_insert('unmapped_studio_data')
         ->fields(array(
           'id' => NULL,
-          'product_gtin' => mysql_real_escape_string($gtin),
-          'product_jira_number' => mysql_real_escape_string($datasetvalue[0]),
+          'product_gtin' => ($gtin),
+          'product_jira_number' => ($datasetvalue[0]),
         ))
         ->execute();
 
