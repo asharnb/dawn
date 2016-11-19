@@ -84,5 +84,29 @@ function studio_photodesk_screens_theme($existing, $type, $theme, $path) {
       'view_pdp' => array(
         'variables' => array('product' => NULL, 'images'=> NULL),
     ),
+
+    'view_studio_dashboard' => array(
+      'variables' => array(
+        'content_GTIN' => array (),
+        'content_duplicates' => array (),
+        'content_detailer_complete' => array (),
+        'content_attribute_complete' => array (),
+        'content_complete' => array (),
+        'content_english_complete' => array (),
+        'content_arabic_complete'=> array (),
+        'studio_sourced'=> array (),
+        'studio_GTIN_issues' => array (),
+        'studio_GTIN_complete' => array (),
+        'overall_complete' => array (),
+        'week_start' => array (),
+        'week_end' => array (),
+    ),
+    ),
+
+    'view_arrivals' => array(
+      'variables' => array(
+        'results' => array (),
+    ),
+    ),
   );
 }

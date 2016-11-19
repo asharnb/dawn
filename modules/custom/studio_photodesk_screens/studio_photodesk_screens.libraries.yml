@@ -4,10 +4,14 @@ studiobridge-sessions:
   css:
     theme:
       css/dataTables/datatables.min.css: {}
+      js/flapper/css/flapper.css: {}
   js:
     js/bootstrap/bootstrap.min.js: {}
     js/datatables/datatables.min.js: {}
+    js/datatables/dataTables.tableTools.min.js: {}
+    js/datatables/dataTables.buttons.min.js: {}
     js/datatable-responsive/datatables.responsive.min.js: {}
+    js/flapper/src/jquery.flapper.js: {}
     js/scripts.js: {}
     js/studio-view-session-drop-product.js: {}
   dependencies:

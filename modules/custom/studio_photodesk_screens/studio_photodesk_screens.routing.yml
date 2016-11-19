@@ -89,3 +89,18 @@ studio_photodesk_screens.vie_completed_list:
     _controller: '\Drupal\studio_photodesk_screens\Controller\ViewCompletedList::content'
   requirements:
     _permission: 'access content'
+
+studio_photodesk_screens.view_studio_dashboard:
+  path: '/view-studio-dashboard'
+  defaults:
+    _controller: '\Drupal\studio_photodesk_screens\Controller\ViewStudioDashboard::content'
+  requirements:
+    _permission: 'access content'
+
+
+studio_photodesk_screens.arrivals:
+  path: '/arrivals'
+  defaults:
+    _controller: '\Drupal\studio_photodesk_screens\Controller\ViewArrivals::content'
+  requirements:
+    _permission: 'access content'

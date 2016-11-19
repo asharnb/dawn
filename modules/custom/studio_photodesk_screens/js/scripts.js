@@ -70,6 +70,9 @@
         "oLanguage": {
          "sProcessing": "Please wait.."
        },
+       buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
         "ajax": Drupal.url('products/complete?_format=json')
       } );
       $('#dt_search_box').keyup(function(){
@@ -199,5 +202,7 @@
   $(window).resize(function(){
     equalheight('.equalheight');
   });
+
+  
 
 }(jQuery));

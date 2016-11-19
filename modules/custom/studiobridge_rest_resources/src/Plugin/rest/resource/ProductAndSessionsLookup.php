@@ -121,6 +121,17 @@ public function get($type) {
   ->condition('type', $bundles, 'IN')
   ->count()->execute();
 
+  $total_count = db_query("select pd.* from production_data pd
+  LEFT JOIN studio_data sd on sd.product_gtin = pd.product_gtin
+  WHERE pd.product_detailer_status='Completed' AND
+  (pd.product_attribute_status='Completed-PIC' OR
+  pd.product_attribute_status='Completed-Detailer' OR
+  pd.product_attribute_status='Completed-Outsource') AND
+  pd.product_english_copy='Completed' AND
+  sd.date_received_retouching <> ''
+  ")->fetchAll();
+
+
   $order_by = $_GET['order'][0]['column'];
   $order_direction = $_GET['order'][0]['dir'];
 
